@@ -3,12 +3,13 @@
   :configs $ {} (:init-fn |app.main/main!) (:reload-fn |app.main/reload!)
     :modules $ [] |respo.calcit/ |lilac/ |memof/ |respo-ui.calcit/ |respo-markdown.calcit/ |reel.calcit/
     :version |0.0.1
+  :entries $ {}
   :files $ {}
     |app.comp.container $ {}
       :ns $ quote
         ns app.comp.container $ :require (respo-ui.core :as ui)
           respo-ui.core :refer $ hsl
-          respo.core :refer $ defcomp defeffect <> >> div button textarea span input list->
+          respo.core :refer $ defcomp defeffect <> >> div button textarea span input list-> create-element
           respo.comp.space :refer $ =<
           reel.comp.reel :refer $ comp-reel
           respo-md.comp.md :refer $ comp-md
@@ -27,11 +28,20 @@
                 progress $ :progress store
               div
                 {} $ :style
-                  merge ui/global ui/fullscreen ui/column $ {} (:background-color :black) (:color :white) (:user-select :none)
+                  merge ui/global ui/fullscreen ui/column $ {} (:color :white) (:user-select :none) (:overflow :hidden)
                 div
                   {} $ :style
+                    merge ui/fullscreen ui/center $ {} (:position :absolute) (:z-index -10)
+                  create-element :video $ {}
+                    :style $ {} (:width "\"100%")
+                    :src "\"/videos/diandian.mov"
+                    :autoplay true
+                    :muted true
+                    :loop true
+                ; div
+                  {} $ :style
                     merge ui/row-parted $ {} (:padding "\"16px 24px")
-                  <> "\"> 假装有标题" $ {} (:font-size 24)
+                  <> "\"> 喵喵喵喵喵喵" $ {} (:font-size 24)
                   span $ {} (:inner-text "\"全屏")
                     :on-click $ fn (e d!) (js/document.body.requestFullscreen)
                 div
@@ -55,12 +65,13 @@
                           [] idx $ div
                             {} $ :style
                               {} (:position :absolute)
-                                :top $ + 100
-                                  * 400 $ :rand b
-                                :right $ wo-log dx
-                            comp-bullet $ :content b
-                comp-progress $ :progress store
-                memof-call comp-footer
+                                :top $ -> js/window.innerHeight (+ 400) (- dx)
+                                :right $ -> js/window.innerWidth (- 40)
+                                  * $ :rand b
+                                  + 40
+                            comp-bullet (:content b) (:color b)
+                ; comp-progress $ :progress store
+                ; memof-call comp-footer
                 when dev? $ comp-reel (>> states :reel) reel ({})
         |comp-progress $ quote
           defcomp comp-progress (progress)
@@ -80,7 +91,8 @@
                       :position :relative
                       :width $ str (* ratio 100) "\"%"
         |comp-bullet $ quote
-          defcomp comp-bullet (text) (<> text)
+          defcomp comp-bullet (text color)
+            <> text $ {} (:white-space :nowrap) (:font-size 26) (:writing-mode :vertical-lr) (:color color)
         |comp-footer $ quote
           defcomp comp-footer () $ div
             {} $ :style
@@ -134,8 +146,14 @@
               :toggle $ update store :playing? not
               :restart $ assoc store :progress 0 :playing? true
               :bullet $ update store :bullets
-                fn (xs)
-                  conj xs $ assoc schema/bullet :content data :progress (:progress store) :rand (rand 1)
+                fn (xs0)
+                  let
+                      xs $ if
+                        > (count xs0) 800
+                        slice xs0 600
+                        , xs0
+                    conj xs $ merge schema/bullet data
+                      {} $ :progress (:progress store)
     |app.timer $ {}
       :ns $ quote (ns app.timer)
       :defs $ {}
@@ -153,6 +171,7 @@
       :ns $ quote
         ns app.main $ :require
           respo.core :refer $ render! clear-cache!
+          respo-ui.core :refer $ hsl
           app.comp.container :refer $ comp-container
           app.updater :refer $ updater
           app.schema :as schema
@@ -164,8 +183,19 @@
           "\"bottom-tip" :default hud!
           app.timer :refer $ delta-time!
       :defs $ {}
+        |*auto-bullets $ quote (defatom *auto-bullets nil)
         |render-app! $ quote
           defn render-app! () $ render! mount-target (comp-container @*reel) dispatch!
+        |rand-content! $ quote
+          defn rand-content! () $ let
+              size $ + 2
+                js/Math.floor $ * 6 (js/Math.random)
+            -> (range size)
+              .map $ fn (idx)
+                if
+                  > (js/Math.random) 0.6
+                  , "\"呜" "\"喵"
+              .join-str "\""
         |*ticking $ quote (defatom *ticking 0)
         |persist-storage! $ quote
           defn persist-storage! () $ .!setItem js/localStorage (:storage-key config/site)
@@ -186,6 +216,7 @@
                 raw $ .!getItem js/localStorage (:storage-key config/site)
               when (some? raw)
                 dispatch! :hydrate-storage $ parse-cirru-edn raw
+            random-bullets!
             start-tick!
             println "|App started."
         |dispatch! $ quote
@@ -194,9 +225,25 @@
               and config/dev? $ not= op :states
               println "\"Dispatch:" op
             reset! *reel $ reel-updater updater @*reel op op-data
+        |random-bullets! $ quote
+          defn random-bullets! () $ reset! *auto-bullets
+            flipped js/setInterval 400 $ fn ()
+              flipped js/setTimeout
+                * 2000 $ js/Math.random
+                fn () $ &doseq
+                  _ $ range 8
+                  dispatch! :bullet $ {}
+                    :content $ rand-content!
+                    :rand $ * (js/Math.random) 1
+                    :color $ if
+                      > (js/Math.random) 0.8
+                      hsl
+                        * 360 $ js/Math.random
+                        , 90 70
+                      , :white
         |start-tick! $ quote
           defn start-tick! () $ reset! *ticking
-            timeout-call 40 $ fn ()
+            timeout-call 20 $ fn ()
               let
                   d $ delta-time!
                 if
@@ -209,6 +256,8 @@
               add-watch *reel :changes $ fn (reel prev) (render-app!)
               reset! *reel $ refresh-reel @*reel schema/store updater
               js/clearTimeout @*ticking
+              js/clearInterval @*auto-bullets
+              random-bullets!
               start-tick!
               hud! "\"ok~" "\"Ok"
             hud! "\"error" build-errors
