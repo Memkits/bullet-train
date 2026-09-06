@@ -18,24 +18,31 @@
           :code $ quote
             defcomp comp-container (reel)
               let
-                  store $ :store reel
-                  states $ :states store
-                  cursor $ or (:cursor states) ([])
-                  state $ or (:data states)
-                    {} $ :content |
-                  progress $ :progress store
+                  reel-map $ unsafe-coerce reel 'Map
+                  store $ unsafe-coerce (&map:get reel-map :store) 'Map
+                  states $ unsafe-coerce (&map:get store :states) 'Map
+                  progress $ unsafe-coerce (&map:get store :progress) 'Number
+                  bullets $ unsafe-coerce (&map:get store :bullets) (:: 'List 'Dynamic)
+                  window-width $ unsafe-coerce js/window.innerWidth 'Number
+                  window-height $ unsafe-coerce js/window.innerHeight 'Number
                 div
                   {} $ :style
-                    merge ui/global ui/fullscreen ui/column $ {} (:color :white) (:user-select :none) (:overflow :hidden)
+                    ->
+                      unsafe-coerce (merge ui/global ui/fullscreen ui/column) (:: 'Map 'Tag 'Dynamic)
+                      assoc :color :white
+                      assoc :user-select :none
+                      assoc :overflow :hidden
                   div
                     {} $ :style
                       merge ui/fullscreen ui/center $ {} (:position :absolute) (:z-index -10)
-                    create-element :video $ {}
-                      :style $ {} (:width |100%)
-                      :src |/videos/diandian.mov
-                      :autoplay true
-                      :muted true
-                      :loop true
+                    create-element :video $ unsafe-coerce
+                      {}
+                        :style $ {} (:width |100%)
+                        :src |/videos/diandian.mov
+                        :autoplay true
+                        :muted true
+                        :loop true
+                      , 'respo.schema/DomProps
                   ; div
                     {} $ :style
                       merge ui/row-parted $ {} (:padding "|16px 24px")
@@ -45,7 +52,7 @@
                   div
                     {} $ :style ui/expand
                     list-> ({})
-                      -> (:bullets store)
+                      -> bullets
                         ; filter $ fn (b)
                           let
                               p $ :progress b
@@ -54,20 +61,17 @@
                         wo-log
                         map-indexed $ fn (idx b)
                           let
-                              dx $ ->
-                                - (:progress b) progress
-                                / display-duration
-                                * js/window.innerWidth
-                                negate
-                                + $ * 0.25 js/window.innerWidth
+                              bullet-map $ unsafe-coerce b 'Map
+                              bullet-progress $ unsafe-coerce (&map:get bullet-map :progress) 'Number
+                              bullet-rand $ unsafe-coerce (&map:get bullet-map :rand) 'Number
+                              dx $ -> (- bullet-progress progress) (/ display-duration) (* window-width) (negate)
+                                + $ * 0.25 window-width
                             [] idx $ div
                               {} $ :style
                                 {} (:position :absolute)
-                                  :top $ -> js/window.innerHeight (+ 400) (- dx)
-                                  :right $ -> js/window.innerWidth (- 40)
-                                    * $ :rand b
-                                    + 40
-                              comp-bullet (:content b) (:color b)
+                                  :top $ -> window-height (+ 400) (- dx)
+                                  :right $ -> window-width (- 40) (* bullet-rand) (+ 40)
+                              comp-bullet (&map:get bullet-map :content) (&map:get bullet-map :color)
                   ; comp-progress $ :progress store
                   ; memof-call comp-footer
                   when dev? $ comp-reel (>> states :reel) reel ({})
@@ -132,7 +136,8 @@
       :defs $ {}
         'dev? $ %{} 'CodeEntry (:doc |)
           :code $ quote
-            def dev? $ = |dev (get-env |mode |release)
+            def dev? $ = |dev
+              option:unwrap-or (get-env |mode) |release
           :examples $ []
           :schema $ :: 'Dynamic
         'display-duration $ %{} 'CodeEntry (:doc |)
@@ -173,7 +178,7 @@
               when
                 and config/dev? $ not= op :states
                 println |Dispatch: op
-              reset! *reel $ reel-updater updater @*reel op op-data
+              reset! *reel $ reel-updater updater @*reel (:: op op-data)
           :examples $ []
           :schema $ :: 'Dynamic
         'main! $ %{} 'CodeEntry (:doc |)
@@ -183,7 +188,7 @@
               render-app!
               add-watch *reel :changes $ fn (reel prev) (render-app!)
               listen-devtools! |k dispatch!
-              .!addEventListener js/window |beforeunload $ fn (event) (persist-storage!)
+              .!addEventListener (unsafe-coerce js/window 'JsObject) |beforeunload $ fn (event) (persist-storage!)
               repeat! 60 persist-storage!
               ; let
                 (raw (.!getItem js/localStorage (:storage-key config/site)))
@@ -196,24 +201,29 @@
           :schema $ :: 'Dynamic
         'mount-target $ %{} 'CodeEntry (:doc |)
           :code $ quote
-            def mount-target $ .!querySelector js/document |.app
+            def mount-target $ .!querySelector (unsafe-coerce js/document 'JsObject) |.app
           :examples $ []
           :schema $ :: 'Dynamic
         'persist-storage! $ %{} 'CodeEntry (:doc |)
           :code $ quote
-            defn persist-storage! () $ .!setItem js/localStorage (:storage-key config/site)
-              format-cirru-edn $ :store @*reel
+            defn persist-storage! () $ .!setItem (unsafe-coerce js/localStorage 'JsObject) (:storage-key config/site)
+              format-cirru-edn $ &map:get (unsafe-coerce @*reel 'Map) :store
           :examples $ []
           :schema $ :: 'Dynamic
         'rand-content! $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn rand-content! () $ let
                 size $ + 2
-                  js/Math.floor $ * 6 (js/Math.random)
+                  unsafe-coerce
+                    js/Math.floor $ * 6
+                      unsafe-coerce (js/Math.random) 'Number
+                    :: 'Number
               -> (range size)
                 .map $ fn (idx)
                   if
-                    > (js/Math.random) 0.6
+                    >
+                      unsafe-coerce (js/Math.random) 'Number
+                      , 0.6
                     , "|呜" "|喵"
                 .join-str |
           :examples $ []
@@ -223,16 +233,20 @@
             defn random-bullets! () $ reset! *auto-bullets
               flipped js/setInterval 400 $ fn ()
                 flipped js/setTimeout
-                  * 2000 $ js/Math.random
+                  * 2000 $ unsafe-coerce (js/Math.random) 'Number
                   fn () $ &doseq
                     _ $ range 8
                     dispatch! :bullet $ {}
                       :content $ rand-content!
-                      :rand $ * (js/Math.random) 1
+                      :rand $ *
+                        unsafe-coerce (js/Math.random) 'Number
+                        , 1
                       :color $ if
-                        > (js/Math.random) 0.8
+                        >
+                          unsafe-coerce (js/Math.random) 'Number
+                          , 0.8
                         hsl
-                          * 360 $ js/Math.random
+                          * 360 $ unsafe-coerce (js/Math.random) 'Number
                           , 90 70
                         , :white
           :examples $ []
@@ -315,13 +329,13 @@
       :defs $ {}
         '*tracked-time $ %{} 'CodeEntry (:doc |)
           :code $ quote
-            defatom *tracked-time $ js/Date.now
+            defatom *tracked-time $ unsafe-coerce (js/Date.now) 'Number
           :examples $ []
           :schema $ :: 'Dynamic
         'delta-time! $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn delta-time! () $ let
-                now $ js/Date.now
+                now $ unsafe-coerce (js/Date.now) 'Number
                 delta $ - now @*tracked-time
               reset! *tracked-time now
               , delta
@@ -329,7 +343,8 @@
           :schema $ :: 'Dynamic
         'reset-timer! $ %{} 'CodeEntry (:doc |)
           :code $ quote
-            defn reset-timer! () $ reset! *tracked-time (js/Date.now)
+            defn reset-timer! () $ reset! *tracked-time
+              unsafe-coerce (js/Date.now) 'Number
           :examples $ []
           :schema $ :: 'Dynamic
       :ns $ %{} 'NsEntry (:doc |)
@@ -338,26 +353,33 @@
       :defs $ {}
         'updater $ %{} 'CodeEntry (:doc |)
           :code $ quote
-            defn updater (store op data op-id op-time)
-              case-default op
-                do (println "|unknown op:" op) store
-                :states $ update-states store data
-                :hydrate-storage data
-                :tick $ let
-                    n $ wo-log
-                      + (:progress store) data
-                  if (>= n config/video-length) (assoc store :progress config/video-length :playing? false) (assoc store :progress n)
-                :toggle $ update store :playing? not
-                :restart $ assoc store :progress 0 :playing? true
-                :bullet $ update store :bullets
-                  fn (xs0)
+            defn updater (store op op-id op-time)
+              match op
+                (:states cursor data) (update-states store cursor data)
+                (:hydrate-storage data) data
+                (:tick data)
+                  let
+                      n $ wo-log
+                        +
+                          &map:get (unsafe-coerce store 'Map) :progress
+                          , data
+                    if (>= n config/video-length)
+                      assoc (assoc store :progress config/video-length) :playing? false
+                      assoc store :progress n
+                (:toggle _) (update store :playing? not)
+                (:restart _)
+                  assoc (assoc store :progress 0) :playing? true
+                (:bullet data)
+                  update store :bullets $ fn (xs0)
                     let
                         xs $ if
                           > (count xs0) 800
                           slice xs0 600
                           , xs0
                       conj xs $ merge schema/bullet data
-                        {} $ :progress (:progress store)
+                        {} $ :progress
+                          &map:get (unsafe-coerce store 'Map) :progress
+                _ $ do (println "|unknown op:" op) store
           :examples $ []
           :schema $ :: 'Dynamic
       :ns $ %{} 'NsEntry (:doc |)
