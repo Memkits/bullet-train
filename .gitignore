@@ -8,3 +8,5 @@ dist/
 .yarn/*.gz
 
 videos/
+.pnp.cjs
+.pnp.loader.mjs
