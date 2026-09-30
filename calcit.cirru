@@ -3,7 +3,7 @@
   :about "|Machine-generated snapshot. Do not edit directly — changes will be overwritten. Use `calcit query` to inspect and `calcit edit`/`calcit tree` to modify. Run `calcit docs agents --contract` before mutations; use `--full` for first orientation or changed contract digest. Manual edits must follow format and schema conventions, then run `calcit edit format`."
   :package |app
   :entries $ {} $ :default
-    {} (:description |) (:init-fn 'app.main/main!) (:mode :native) (:reload-fn 'app.main/reload!)
+    {} (:description |) (:init-fn 'app.main/main!) (:mode :js) (:reload-fn 'app.main/reload!) (:target :browser)
       :feature-policy $ {}
       :modules $ [] |respo.calcit/ |memof/ |respo-ui.calcit/ |respo-markdown.calcit/ |reel.calcit/
       :type-slots $ {} $ :dispatch-op |app.schema/Op
@@ -96,7 +96,7 @@
                     :border-top $ str "|1px solid " $ hsl 0 0 50
                   div $ {} $ :style
                     {} (:height 16)
-                      :border-right $ str "|8px solid " $ hsl 0 0 90 (%some 0.7)
+                      :border-right $ str "|8px solid " $ hsl 0 0 90 (Option :some 0.7)
                       :bottom 8
                       :position :relative
                       :width $ str (* ratio 100) |%
@@ -108,8 +108,8 @@
             let
                 raw $ js/prompt message
               if (js-present? raw)
-                %some $ unsafe-coerce raw 'String
-                %none
+                Option :some $ unsafe-coerce raw 'String
+                Option :none
           :examples $ []
           :schema $ :: 'Fn $ {}
             :args $ [] 'String
