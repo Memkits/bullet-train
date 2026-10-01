@@ -5,7 +5,7 @@
   :entries $ {} $ :default
     {} (:description |) (:init-fn 'app.main/main!) (:mode :js) (:reload-fn 'app.main/reload!) (:target :browser)
       :feature-policy $ {}
-      :modules $ [] |respo.calcit/ |memof/ |respo-ui.calcit/ |respo-markdown.calcit/ |reel.calcit/
+      :modules $ [] |respo.calcit/ |respo-ui.calcit/ |reel.calcit/
       :type-slots $ {} $ :dispatch-op |app.schema/Op
   :files $ {}
     'app.comp.container $ %{} 'FileEntry
@@ -19,7 +19,7 @@
         'comp-container $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defcomp comp-container (reel)
             let
-                store $ decode-map-as (&map:get reel :store) app.schema/Store
+                store $ assert-type (&map:get reel :store) 'app.schema/Store
                 states store.:states
                 progress store.:progress
                 bullets store.:bullets
@@ -117,17 +117,15 @@
             :return $ :: 'Option 'String
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.comp.container
-          :require ([] respo-ui.core :as ui)
-            [] respo-ui.core :refer $ [] hsl
-            [] respo.core :refer $ [] defcomp defeffect <> >> div button textarea span input list-> create-element
-            [] respo.comp.space :refer $ [] =<
-            [] reel.comp.reel :refer $ [] comp-reel
-            [] respo-md.comp.md :refer $ [] comp-md
-            [] app.config :refer $ [] dev? video-length display-duration
-            [] app.timer :refer $ [] reset-timer!
-            [] memof.alias :refer $ [] memof-call
-            [] app.schema :refer $ [] Op
-            [] js-ffi.browser :refer $ [] viewport-width viewport-height random
+          :require (respo-ui.core :as ui)
+            respo-ui.core :refer $ hsl
+            respo.core :refer $ defcomp defeffect <> >> div button textarea span input list-> create-element
+            respo.comp.space :refer $ =<
+            reel.comp.reel :refer $ comp-reel
+            app.config :refer $ dev? video-length display-duration
+            app.timer :refer $ reset-timer!
+            app.schema :refer $ Op
+            js-ffi.browser :refer $ viewport-width viewport-height random
     'app.config $ %{} 'FileEntry
       :defs $ {}
         'dev? $ %{} 'CodeEntry (:doc |)
@@ -374,7 +372,7 @@
           :code $ quote $ defn updater (store op op-id op-time)
             match op
               (:states cursor data)
-                decode-map-as (update-states store cursor data) app.schema/Store
+                assert-type (update-states store cursor data) 'app.schema/Store
               (:hydrate-storage data) data
               (:tick data)
                 let

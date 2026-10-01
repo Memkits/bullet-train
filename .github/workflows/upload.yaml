@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: cos-upload-${{ github.repository }}-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'production' }}
+  cancel-in-progress: false
+
 jobs:
   test:
     runs-on: ubuntu-24.04
@@ -37,7 +41,7 @@ jobs:
     - name: Resolve immutable dependencies
       run: |
         set -euo pipefail
-        caps --ci
+        caps --ci --strict
         yarn install --immutable
         caps verify --toolchain
 
@@ -45,6 +49,10 @@ jobs:
       run: |
         set -euo pipefail
         test "$(calcit --version)" = "0.27.0"
+        test -f calcit.cirru
+        test -f deps.cirru
+        test ! -e compact.cirru
+        test ! -e package.cirru
         calcit calcit.cirru edit format
         git diff --exit-code -- calcit.cirru
         calcit calcit.cirru fix --workflow strict --verify --format edn
@@ -64,23 +72,25 @@ jobs:
       id: asset-path
       env:
         CDN_ORIGIN: https://cos-sh.tiye.me
+        PR_NUMBER: ${{ github.event.pull_request.number }}
       run: |
+        set -euo pipefail
         if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
-          asset_prefix="${GITHUB_REPOSITORY}/pr/"
-        elif [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
-          asset_prefix="${GITHUB_REPOSITORY}/"
+          prefix="$GITHUB_REPOSITORY/pr/$PR_NUMBER/"
+        elif [[ "$GITHUB_EVENT_NAME" == "push" && "$GITHUB_REF" == "refs/heads/main" ]]; then
+          prefix="$GITHUB_REPOSITORY/"
         else
-          asset_prefix="${GITHUB_REPOSITORY}/branches/${GITHUB_REF_NAME}/"
+          prefix="$GITHUB_REPOSITORY/branches/$GITHUB_REF_NAME/"
         fi
-        base_url="${CDN_ORIGIN}/${asset_prefix}"
-        echo "VITE_BASE_URL=${base_url}" >> "$GITHUB_ENV"
-        echo "prefix=${asset_prefix}" >> "$GITHUB_OUTPUT"
-        echo "base-url=${base_url}" >> "$GITHUB_OUTPUT"
+        echo "VITE_BASE_URL=$CDN_ORIGIN/$prefix" >> "$GITHUB_ENV"
+        echo "prefix=$prefix" >> "$GITHUB_OUTPUT"
+        echo "base-url=$CDN_ORIGIN/$prefix" >> "$GITHUB_OUTPUT"
 
     - name: Build web assets with CDN URLs
       run: |
         set -euo pipefail
         yarn build
+        node --test scripts/bullet-regression.test.mjs
 
     - name: Check COS credentials
       id: cos-credentials
