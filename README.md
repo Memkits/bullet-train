@@ -11,8 +11,8 @@ Use Calcit 0.27.0 and `caps --ci --strict`. The canonical project files are
 `package.cirru` snapshots. Runtime regressions are checked with
 `node --test scripts/*.test.mjs` after code generation.
 
-Only generated frontend assets are uploaded to COS. CI checks their CDN prefix,
-and cos-upload-action verifies public access. Existing video and server
+Only generated frontend assets are uploaded to COS. cos-upload-action handles
+public verification with its built-in verify settings. Existing video and server
 deployment paths are unchanged.
 
 ### Workflow
