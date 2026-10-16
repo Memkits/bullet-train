@@ -12,3 +12,4 @@ dist/
 videos/
 .pnp.cjs
 .pnp.loader.mjs
+/.calcit/
