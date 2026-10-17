@@ -19,7 +19,7 @@
         'comp-container $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defcomp comp-container (reel)
             let
-                store $ assert-type (&map:get reel :store) 'app.schema/Store
+                store $ app.schema/read-store $ option:unwrap (get reel :store)
                 states store.:states
                 progress store.:progress
                 bullets store.:bullets
@@ -30,32 +30,29 @@
                 div
                   {} $ :style $ merge ui/fullscreen ui/center
                     {} (:position :absolute) (:z-index -10)
-                  create-element :video $ unsafe-coerce
-                    {}
-                      :style $ {} $ :width |100%
-                      :src |/videos/diandian.mov
-                      :autoplay true
-                      :muted true
-                      :loop true
-                    , 'respo.schema/DomProps
+                  create-element :video $ {}
+                    :style $ {} $ :width |100%
+                    :src |/videos/diandian.mov
+                    :autoplay true
+                    :muted true
+                    :loop true
                 div
                   {} $ :style ui/expand
                   list-> ({})
-                    -> bullets (wo-log)
-                      map-indexed $ fn (idx bullet)
-                        let
-                            bullet-progress bullet.:progress
-                            bullet-rand bullet.:rand
-                            dx $ -> (- bullet-progress progress) (/ display-duration) (* window-width) negate $ + (* 0.25 window-width)
-                          [] idx $ div
-                            {} $ :style $ {} (:position :absolute)
-                              :top $ -> window-height (+ 400) (- dx)
-                              :right $ -> window-width (- 40) (* bullet-rand) (+ 40)
-                            comp-bullet bullet.:content bullet.:color
+                    -> bullets $ map-indexed $ fn (idx bullet)
+                      let
+                          bullet-progress bullet.:progress
+                          bullet-rand bullet.:rand
+                          dx $ -> (- bullet-progress progress) (/ display-duration) (* window-width) negate $ + (* 0.25 window-width)
+                        [] idx $ div
+                          {} $ :style $ {} (:position :absolute)
+                            :top $ -> window-height (+ 400) (- dx)
+                            :right $ -> window-width (- 40) (* bullet-rand) (+ 40)
+                          comp-bullet bullet.:content bullet.:color
                 when dev? $ comp-reel (>> states :reel) reel $ {}
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'respo.schema/Component)
-            :args $ [] 'app.schema/Reel
+            :args $ [] $ :: 'Map 'Tag 'Dynamic
             :features $ #{} :js-ffi
         'comp-footer $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defcomp comp-footer ()
@@ -104,12 +101,7 @@
           :schema $ :: 'Fn $ {} (:return 'respo.schema/Component)
             :args $ [] 'Number
         'prompt-text $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn prompt-text (message)
-            let
-                raw $ js/prompt message
-              if (js-present? raw)
-                Option :some $ unsafe-coerce raw 'String
-                Option :none
+          :code $ quote $ defn prompt-text (message) (js-ffi.browser/prompt! message)
           :examples $ []
           :schema $ :: 'Fn $ {}
             :args $ [] 'String
@@ -151,49 +143,58 @@
     'app.main $ %{} 'FileEntry
       :defs $ {}
         '*auto-bullets $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defatom *auto-bullets 0
+          :code $ quote $ defref *auto-bullets 0
           :examples $ []
           :schema $ :: 'Ref 'Number
         '*reel $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defatom *reel
+          :code $ quote $ defref *reel
             -> reel-schema/reel (assoc :base app.schema/store) (assoc :store app.schema/store)
           :examples $ []
-          :schema $ :: 'Ref 'app.schema/Reel
+          :schema $ :: 'Ref $ :: 'Map 'Tag 'Dynamic
         '*ticking $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defatom *ticking 0
+          :code $ quote $ defref *ticking 0
           :examples $ []
           :schema $ :: 'Ref 'Number
         'dispatch! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn dispatch! (op)
             when config/dev? $ println |Dispatch: op
-            reset! *reel $ assert-type (reel-updater updater @*reel op) 'app.schema/Reel
+            reset! *reel $ reel-updater app.updater/update-wire-store @*reel op
+            , &unit
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ [] 'Enum
+            :args $ [] 'app.schema/Op
+        'dispatch-wire! $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn dispatch-wire! (op)
+            dispatch! $ decode-map-as op 'app.schema/Op
+          :examples $ []
+          :schema $ :: 'Fn $ {} (:return 'Unit)
+            :args $ [] 'Dynamic
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! ()
             println "|Running mode:" $ if config/dev? |dev |release
             render-app!
-            add-watch *reel :changes $ fn (reel prev) (render-app!)
-            listen-devtools! |k dispatch!
+            add-watch! *reel :changes $ fn (reel prev) (render-app!)
+            listen-devtools! |k dispatch-wire!
             add-event-listener! |beforeunload $ fn (event) (persist-storage!)
             repeat! 60 persist-storage!
             random-bullets!
             start-tick!
             println "|App started."
+            , &unit
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
             :features $ #{} :js-ffi
         'mount-target $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def mount-target
-            option:unwrap $ query-selector |.app
+            option:unwrap $ respo.ffi.browser/query-selector |.app
           :examples $ []
-          :schema $ :: 'js-ffi.browser/DomElementHost
+          :schema $ :: 'respo.dom/DomElement
         'persist-storage! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn persist-storage! ()
-            storage-set! (config/site :storage-key)
-              format-cirru-edn $ decode-map-as (&map:get @*reel :store) app.schema/Store
+            storage-set!
+              option:unwrap $ get config/site :storage-key
+              format-cirru-edn $ app.schema/read-store $ option:unwrap (get @*reel :store)
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
@@ -208,7 +209,7 @@
                   if
                     > (random) 0.6
                     , "|呜" "|喵"
-                join-str |
+                join-string |
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'String)
             :args $ []
@@ -229,28 +230,30 @@
                   * 2000 $ random
                 , &unit
               , 400
+            , &unit
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
         'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reload! ()
             if (nil? build-errors)
-              do (remove-watch *reel :changes) (clear-cache!)
-                add-watch *reel :changes $ fn (reel prev) (render-app!)
-                reset! *reel $ assert-type (refresh-reel @*reel app.schema/store updater) 'app.schema/Reel
+              do (remove-watch! *reel :changes) (clear-cache!)
+                add-watch! *reel :changes $ fn (reel prev) (render-app!)
+                reset! *reel $ decode-map-as (refresh-reel @*reel app.schema/store app.updater/update-wire-store) (:: 'Map 'Tag 'Dynamic)
                 clear-timeout! @*ticking
                 clear-interval! @*auto-bullets
                 random-bullets!
                 start-tick!
                 hud! |ok~ |Ok
               hud! |error build-errors
+            , &unit
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
             :features $ #{} :js-ffi
         'render-app! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn render-app! ()
-            render! mount-target (comp-container @*reel) dispatch!
+            render! mount-target (comp-container @*reel) dispatch-wire!
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
@@ -269,29 +272,30 @@
               fn ()
                 let
                     delta $ delta-time!
-                    store $ decode-map-as (&map:get @*reel :store) app.schema/Store
+                    store $ app.schema/read-store $ option:unwrap (get @*reel :store)
                   when store.:playing? $ dispatch! $ app.schema/Op :tick delta
                 start-tick!
               , 20
+            , &unit
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.main
           :require
-            [] respo.core :refer $ [] render! clear-cache!
-            [] respo-ui.core :refer $ [] hsl
-            [] app.comp.container :refer $ [] comp-container
-            [] app.updater :refer $ [] updater
-            [] app.schema :as schema
-            [] reel.util :refer $ [] listen-devtools!
-            [] reel.core :refer $ [] reel-updater refresh-reel
-            [] reel.schema :as reel-schema
-            [] app.config :as config
-            [] |./calcit.build-errors :default build-errors
-            [] |bottom-tip :default hud!
-            [] app.timer :refer $ [] delta-time!
-            [] js-ffi.browser :refer $ [] query-selector add-event-listener! set-interval! set-timeout! clear-timeout! clear-interval! storage-set! random
+            respo.core :refer $ render! clear-cache!
+            respo-ui.core :refer $ hsl
+            app.comp.container :refer $ comp-container
+            app.updater :refer $ updater
+            app.schema :as schema
+            reel.util :refer $ listen-devtools!
+            reel.core :refer $ reel-updater refresh-reel
+            reel.schema :as reel-schema
+            app.config :as config
+            |./calcit.build-errors :default build-errors
+            |bottom-tip :default hud!
+            app.timer :refer $ delta-time!
+            js-ffi.browser :refer $ query-selector add-event-listener! set-interval! set-timeout! clear-timeout! clear-interval! storage-set! random
     'app.schema $ %{} 'FileEntry
       :defs $ {}
         'Bullet $ %{} 'CodeEntry (:doc |)
@@ -315,10 +319,6 @@
             :reel/remove 'Number
           :examples $ []
           :schema $ :: 'EnumDef
-        'Reel $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ def Reel &unit
-          :examples $ []
-          :schema $ :: 'Map 'Tag 'Dynamic
         'Store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defstruct Store
             :states $ :: 'Map 'Tag 'Dynamic
@@ -332,6 +332,15 @@
             Bullet :progress 0 :content | :rand 1 :color |white
           :examples $ []
           :schema $ :: 'app.schema/Bullet
+        'read-store $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn read-store (value)
+            if (struct? value)
+              struct-match value (Store current current)
+                _ other $ raise |Expected-Store
+              raise |Expected-Store
+          :examples $ []
+          :schema $ :: 'Fn $ {} (:return 'app.schema/Store)
+            :args $ [] 'Dynamic
         'store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def store
             Store :states
@@ -344,7 +353,7 @@
     'app.timer $ %{} 'FileEntry
       :defs $ {}
         '*tracked-time $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defatom *tracked-time (now-ms)
+          :code $ quote $ defref *tracked-time (now-ms)
           :examples $ []
           :schema $ :: 'Ref 'Number
         'delta-time! $ %{} 'CodeEntry (:doc |)
@@ -360,23 +369,30 @@
         'reset-timer! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reset-timer! ()
             reset! *tracked-time $ now-ms
+            , &unit
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.timer
-          :require $ [] js-ffi.shared :refer $ [] now-ms
+          :require $ js-ffi.shared :refer $ now-ms
     'app.updater $ %{} 'FileEntry
-      :defs $ {} $ 'updater
-        %{} 'CodeEntry (:doc |)
+      :defs $ {}
+        'update-wire-store $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn update-wire-store (store op op-id op-time)
+            updater (app.schema/read-store store) (decode-map-as op 'app.schema/Op) (decode-map-as op-id 'String) (decode-map-as op-time 'Number)
+          :examples $ []
+          :schema $ :: 'Fn $ {} (:return 'app.schema/Store)
+            :args $ [] 'Dynamic 'Dynamic 'Dynamic 'Dynamic
+        'updater $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn updater (store op op-id op-time)
             match op
               (:states cursor data)
-                assert-type (update-states store cursor data) 'app.schema/Store
+                app.schema/read-store $ update-states store cursor data
               (:hydrate-storage data) data
               (:tick data)
                 let
-                    next-progress $ wo-log $ + store.:progress data
+                    next-progress $ + store.:progress data
                   if (>= next-progress config/video-length)
                     -> store (assoc :progress config/video-length) (assoc :playing? false)
                     assoc store :progress next-progress
@@ -394,10 +410,10 @@
               _ $ do (println "|unknown op:" op) store
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'app.schema/Store)
-            :args $ [] 'app.schema/Store 'Enum 'String 'Number
+            :args $ [] 'app.schema/Store 'app.schema/Op 'String 'Number
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.updater
           :require
-            [] respo.cursor :refer $ [] update-states
-            [] app.schema :as schema
-            [] app.config :as config
+            respo.cursor :refer $ update-states
+            app.schema :as schema
+            app.config :as config

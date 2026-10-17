@@ -2,17 +2,17 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import * as c from "../js-out/calcit.core.mjs";
 import { store, Op } from "../js-out/app.schema.mjs";
-import { updater } from "../js-out/app.updater.mjs";
+import { update_wire_store } from "../js-out/app.updater.mjs";
 import { video_length } from "../js-out/app.config.mjs";
 import { comp_bullet, comp_progress, comp_container, comp_footer } from "../js-out/app.comp.container.mjs";
 import { reel } from "../js-out/reel.schema.mjs";
 import { make_string } from "../js-out/respo.render.html.mjs";
-import { component_$q_, component_tree } from "../js-out/respo.util.detect.mjs";
+import { component_$q_, component_tree, render_node_value } from "../js-out/respo.util.detect.mjs";
 
-const t = c.init_tags(["progress", "playing?", "bullets", "content", "color", "rand", "states", "root", "data", "store", "base", "event", "children", "click", "toggle", "restart"]);
+const t = c.init_tags(["progress", "playing?", "bullets", "content", "color", "rand", "states", "root", "data", "store", "base", "event", "children", "click", "toggle", "restart", "node"]);
 const field = (v, k) => c.option_$o_unwrap(c.get(v, k));
 const nth = (v, i) => c.option_$o_unwrap(c.nth(v, i));
-const apply = (v, name, ...args) => updater(v, c._PCT__$o__$o_(Op, c.init_tags([name])[name], ...args), "test", 0);
+const apply = (v, name, ...args) => update_wire_store(v, c._PCT__$o__$o_(Op, c.init_tags([name])[name], ...args), "test", 0);
 
 test("tick advances progress and stops exactly at the video duration", () => {
   let next = apply(store, "tick", 100);
@@ -54,7 +54,7 @@ test("generated components render bullets, progress and the original video URL",
   assert.match(make_string(comp_bullet("fixture", "yellow")), /fixture/);
   assert.match(make_string(comp_progress(video_length / 2)), /width:50%/);
   const originalWindow = globalThis.window;
-  globalThis.window = { innerWidth: 1024, innerHeight: 768 };
+  globalThis.window = { innerWidth: 1024, innerHeight: 768, devicePixelRatio: 1 };
   try {
     const next = apply(store, "bullet", "rendered", 0.5, "white");
     const html = make_string(comp_container(c.assoc(c.assoc(reel, t.base, next), t.store, next)));
@@ -73,7 +73,9 @@ function findClick(node, label) {
   const children = c.get(node, t.children);
   if (c.option_$o_some_$q_(children)) {
     for (const pair of c.option_$o_unwrap(children).toArray()) {
-      const found = findClick(nth(pair, 1), label);
+      const child = field(pair, t.node);
+      if (!c.option_$o_some_$q_(child)) continue;
+      const found = findClick(render_node_value(c.option_$o_unwrap(child)), label);
       if (found) return found;
     }
   }
