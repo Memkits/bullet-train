@@ -35,6 +35,9 @@ Respo 的 ChildPair/RenderNode；不修改原业务断言或增加检查脚本�
 
 开放状态和 wire 输入仍有显式 Dynamic，不宣称类型债务清零。本地媒体文件未随仓库提供，
 没有原视频时只能验收自动弹幕和交互逻辑，不能据此宣称视频播放通过。
+移除未被工作流引用的旧 quality 预算文件：其中仍有已删除的 `app.schema/Reel`
+和两处已移除 unsafe 的额度。保留全部定义检查、完整 strict 与原 7 项测试，
+不依赖已退役的 `analyze quality`；strict 报告中四个实际 Reel/wire 边界仍逐项列出。
 
 Only generated frontend assets are uploaded to COS. cos-upload-action handles
 HTML reference and public verification with the released v1.2.0 action’s built-in verify settings. Existing video and server
