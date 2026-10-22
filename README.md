@@ -6,9 +6,9 @@ Bullet(Screen) train
 
 Demo _TODO_ .
 
-使用配对的 Calcit/procs **0.30.1-alpha.4**（已发布的预发布版，不是正式 0.30.1）、
-Caps 0.1.1、Node.js 24 和 Yarn 4.18.0。模块使用正式 Reel 0.6.39、
-Respo 0.16.122、UI 0.7.41 和 js-ffi 0.2.3。
+使用配对的正式 Calcit/procs **0.30.1**、Caps 0.1.1、Node.js 24 和 Yarn 4.18.0。
+模块使用正式 Reel 0.6.41、Respo 0.16.124、UI 0.8.0 和 js-ffi 0.2.5；
+不修改已迁移的应用源码、公开操作或存档格式，仍只写入存档、不新增恢复行为。
 
 播放进度、弹幕内容/位置、裁剪规则和 `/videos/diandian.mov` 地址保持不变。
 入口继续生成自动弹幕；原有 footer/progress 组件没有在主界面挂载，本轮不新增界面功能。
