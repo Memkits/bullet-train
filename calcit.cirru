@@ -165,7 +165,10 @@
             :args $ [] 'app.schema/Op
         'dispatch-wire! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn dispatch-wire! (op)
-            dispatch! $ decode-map-as op 'app.schema/Op
+            if (reel.core/reel-control-op? op)
+              reset! *reel $ reel-updater app.updater/update-wire-store @*reel op
+              dispatch! $ decode-map-as op 'app.schema/Op
+            , &unit
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ [] 'Dynamic
