@@ -22,6 +22,13 @@ Vite 升级 8.3.3；其他 npm 依赖不变，移除包预批准、不添加新�
 源码仅由官方 Linux 0.30.1 的结构化事务生成；本地不执行 Caps 或编译器 check/build/
 codegen/Snapshot 写入，只读 query/tree 与跳过脚本的 Yarn 锁文件更新允许。
 
+[官方准备 CI 40123169334](https://github.com/Memkits/bullet-train/actions/runs/40123169334)
+已通过严格完整依赖图、全部定义、完整 strict（诊断为空）、零 deprecated、修改前后各
+7/7 原 JS 测试（零失败/跳过）及生产构建；本仓库没有附着原生测试，不以空集合声称原生测试通过。
+成功产物 SHA256 及全部 36 个定义/配置已核对。全新本地来源实际显示彩色自动弹幕，
+刷新后重新启动；媒体区域因未提供原视频显示无法播放，不声称视频播放、footer 页面交互、
+持久化恢复或热更新 HUD 注错已验收。最终 PR CI/COS 内置校验仍需另行通过。
+
 播放进度、弹幕内容/位置、裁剪规则和 `/videos/diandian.mov` 地址保持不变。
 入口继续生成自动弹幕；原有 footer/progress 组件没有在主界面挂载，本轮不新增界面功能。
 Store 在 Reel 边界做名义检查，操作通过已有具名 Op 的实际解码进入 updater；

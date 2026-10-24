@@ -19,17 +19,17 @@
         'comp-container $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defcomp comp-container (reel)
             let
-                store $ app.schema/read-store $ option:unwrap (get reel :store)
+                store $ app.schema/read-store $ .unwrap (get reel :store)
                 states store.:states
                 progress store.:progress
                 bullets store.:bullets
                 window-width $ viewport-width
                 window-height $ viewport-height
               div
-                {} $ :style $ -> (merge ui/global ui/fullscreen ui/column) (assoc :color :white) (assoc :user-select :none) (assoc :overflow :hidden)
+                {} $ :style $ -> (.merge ui/global ui/fullscreen ui/column) (assoc :color :white) (assoc :user-select :none) (assoc :overflow :hidden)
                 div
-                  {} $ :style $ merge ui/fullscreen ui/center
-                    {} (:position :absolute) (:z-index -10)
+                  {} $ :style $ .merge ui/fullscreen ui/center
+                    {} (:position |absolute) (:z-index |-10)
                   create-element :video $ {}
                     :style $ {} $ :width |100%
                     :src |/videos/diandian.mov
@@ -57,10 +57,10 @@
         'comp-footer $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defcomp comp-footer ()
             div
-              {} $ :style $ merge ui/row-parted
+              {} $ :style $ .merge ui/row-parted
                 {} $ :padding "|8px 16px"
               div
-                {} $ :style $ merge ui/row-middle
+                {} $ :style ui/row-middle
                 span $ {} (:inner-text "|开始/暂停")
                   :on-click $ fn (e d!)
                     d! $ Op :toggle
@@ -122,7 +122,7 @@
       :defs $ {}
         'dev? $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def dev?
-            = |dev $ option:unwrap-or (get-env |mode) |release
+            = |dev $ .unwrap-or (get-env |mode) |release
           :examples $ []
           :schema $ :: 'Bool
         'display-duration $ %{} 'CodeEntry (:doc |)
@@ -190,14 +190,14 @@
             :features $ #{} :js-ffi
         'mount-target $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def mount-target
-            option:unwrap $ respo.ffi.browser/query-selector |.app
+            .unwrap $ respo.ffi.browser/query-selector |.app
           :examples $ []
           :schema $ :: 'respo.dom/DomElement
         'persist-storage! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn persist-storage! ()
             storage-set!
-              option:unwrap $ get config/site :storage-key
-              format-cirru-edn $ app.schema/read-store $ option:unwrap (get @*reel :store)
+              .unwrap $ get config/site :storage-key
+              format-cirru-edn $ app.schema/read-store $ .unwrap (get @*reel :store)
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
@@ -275,7 +275,7 @@
               fn ()
                 let
                     delta $ delta-time!
-                    store $ app.schema/read-store $ option:unwrap (get @*reel :store)
+                    store $ app.schema/read-store $ .unwrap (get @*reel :store)
                   when store.:playing? $ dispatch! $ app.schema/Op :tick delta
                 start-tick!
               , 20
@@ -406,7 +406,7 @@
                 let
                     items0 store.:bullets
                     items $ if
-                      > (count items0) 800
+                      > (.len items0) 800
                       slice items0 600
                       , items0
                   assoc store :bullets $ conj items $ app.schema/Bullet :progress store.:progress :content content :rand rand :color color
