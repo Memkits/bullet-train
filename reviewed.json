@@ -1,0 +1,3018 @@
+{
+  "namespaces": [
+    {
+      "command": "query.ns",
+      "data": {
+        "definition_count": 2,
+        "doc": "",
+        "namespace": "app.$meta",
+        "ns_code": [
+          "ns",
+          "app.$meta"
+        ]
+      },
+      "schema_version": 1
+    },
+    {
+      "command": "query.ns",
+      "data": {
+        "definition_count": 5,
+        "doc": "",
+        "namespace": "app.comp.container",
+        "ns_code": [
+          "ns",
+          "app.comp.container",
+          [
+            ":require",
+            [
+              "respo-ui.core",
+              ":as",
+              "ui"
+            ],
+            [
+              "respo-ui.core",
+              ":refer",
+              [
+                "hsl"
+              ]
+            ],
+            [
+              "respo.core",
+              ":refer",
+              [
+                "defcomp",
+                "defeffect",
+                "<>",
+                ">>",
+                "div",
+                "button",
+                "textarea",
+                "span",
+                "input",
+                "list->",
+                "create-element"
+              ]
+            ],
+            [
+              "respo.comp.space",
+              ":refer",
+              [
+                "=<"
+              ]
+            ],
+            [
+              "reel.comp.reel",
+              ":refer",
+              [
+                "comp-reel"
+              ]
+            ],
+            [
+              "app.config",
+              ":refer",
+              [
+                "dev?",
+                "video-length",
+                "display-duration"
+              ]
+            ],
+            [
+              "app.timer",
+              ":refer",
+              [
+                "reset-timer!"
+              ]
+            ],
+            [
+              "app.schema",
+              ":refer",
+              [
+                "Op"
+              ]
+            ],
+            [
+              "js-ffi.browser",
+              ":refer",
+              [
+                "viewport-width",
+                "viewport-height",
+                "random"
+              ]
+            ]
+          ]
+        ]
+      },
+      "schema_version": 1
+    },
+    {
+      "command": "query.ns",
+      "data": {
+        "definition_count": 4,
+        "doc": "",
+        "namespace": "app.config",
+        "ns_code": [
+          "ns",
+          "app.config"
+        ]
+      },
+      "schema_version": 1
+    },
+    {
+      "command": "query.ns",
+      "data": {
+        "definition_count": 14,
+        "doc": "",
+        "namespace": "app.main",
+        "ns_code": [
+          "ns",
+          "app.main",
+          [
+            ":require",
+            [
+              "respo.core",
+              ":refer",
+              [
+                "render!",
+                "clear-cache!"
+              ]
+            ],
+            [
+              "respo-ui.core",
+              ":refer",
+              [
+                "hsl"
+              ]
+            ],
+            [
+              "app.comp.container",
+              ":refer",
+              [
+                "comp-container"
+              ]
+            ],
+            [
+              "app.updater",
+              ":refer",
+              [
+                "updater"
+              ]
+            ],
+            [
+              "app.schema",
+              ":as",
+              "schema"
+            ],
+            [
+              "reel.util",
+              ":refer",
+              [
+                "listen-devtools!"
+              ]
+            ],
+            [
+              "reel.core",
+              ":refer",
+              [
+                "reel-updater",
+                "refresh-reel"
+              ]
+            ],
+            [
+              "reel.schema",
+              ":as",
+              "reel-schema"
+            ],
+            [
+              "app.config",
+              ":as",
+              "config"
+            ],
+            [
+              "|./calcit.build-errors",
+              ":default",
+              "build-errors"
+            ],
+            [
+              "|bottom-tip",
+              ":default",
+              "hud!"
+            ],
+            [
+              "app.timer",
+              ":refer",
+              [
+                "delta-time!"
+              ]
+            ],
+            [
+              "js-ffi.browser",
+              ":refer",
+              [
+                "query-selector",
+                "add-event-listener!",
+                "set-interval!",
+                "set-timeout!",
+                "clear-timeout!",
+                "clear-interval!",
+                "storage-set!",
+                "random"
+              ]
+            ]
+          ]
+        ]
+      },
+      "schema_version": 1
+    },
+    {
+      "command": "query.ns",
+      "data": {
+        "definition_count": 6,
+        "doc": "",
+        "namespace": "app.schema",
+        "ns_code": [
+          "ns",
+          "app.schema"
+        ]
+      },
+      "schema_version": 1
+    },
+    {
+      "command": "query.ns",
+      "data": {
+        "definition_count": 3,
+        "doc": "",
+        "namespace": "app.timer",
+        "ns_code": [
+          "ns",
+          "app.timer",
+          [
+            ":require",
+            [
+              "js-ffi.shared",
+              ":refer",
+              [
+                "now-ms"
+              ]
+            ]
+          ]
+        ]
+      },
+      "schema_version": 1
+    },
+    {
+      "command": "query.ns",
+      "data": {
+        "definition_count": 2,
+        "doc": "",
+        "namespace": "app.updater",
+        "ns_code": [
+          "ns",
+          "app.updater",
+          [
+            ":require",
+            [
+              "respo.cursor",
+              ":refer",
+              [
+                "update-states"
+              ]
+            ],
+            [
+              "app.schema",
+              ":as",
+              "schema"
+            ],
+            [
+              "app.config",
+              ":as",
+              "config"
+            ]
+          ]
+        ]
+      },
+      "schema_version": 1
+    }
+  ],
+  "definitions": [
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "def",
+          "calcit-dirname",
+          "|"
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.$meta/calcit-dirname",
+        "js_ffi": null,
+        "schema": null,
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:b9c073ddc99189680e33ec22dc7f5689",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "def",
+          "calcit-filename",
+          "|calcit.cirru"
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.$meta/calcit-filename",
+        "js_ffi": null,
+        "schema": null,
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:a2706c65c80308f07d99e2a9ab5bd02b",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defcomp",
+          "comp-bullet",
+          [
+            "text",
+            "color"
+          ],
+          [
+            "<>",
+            "text",
+            [
+              "{}",
+              [
+                ":white-space",
+                ":nowrap"
+              ],
+              [
+                ":font-size",
+                "26"
+              ],
+              [
+                ":writing-mode",
+                ":vertical-lr"
+              ],
+              [
+                ":color",
+                "color"
+              ]
+            ]
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.comp.container/comp-bullet",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'respo.schema/Component"
+          ],
+          [
+            ":args",
+            [
+              "[]",
+              "'String",
+              "'String"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:0a2d610a8e2c7cfaf3350f8af7dae495",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defcomp",
+          "comp-container",
+          [
+            "reel"
+          ],
+          [
+            "let",
+            [
+              [
+                "store",
+                [
+                  "app.schema/read-store",
+                  [
+                    "option:unwrap",
+                    [
+                      "get",
+                      "reel",
+                      ":store"
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "states",
+                "store.:states"
+              ],
+              [
+                "progress",
+                "store.:progress"
+              ],
+              [
+                "bullets",
+                "store.:bullets"
+              ],
+              [
+                "window-width",
+                [
+                  "viewport-width"
+                ]
+              ],
+              [
+                "window-height",
+                [
+                  "viewport-height"
+                ]
+              ]
+            ],
+            [
+              "div",
+              [
+                "{}",
+                [
+                  ":style",
+                  [
+                    "->",
+                    [
+                      "merge",
+                      "ui/global",
+                      "ui/fullscreen",
+                      "ui/column"
+                    ],
+                    [
+                      "assoc",
+                      ":color",
+                      ":white"
+                    ],
+                    [
+                      "assoc",
+                      ":user-select",
+                      ":none"
+                    ],
+                    [
+                      "assoc",
+                      ":overflow",
+                      ":hidden"
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "div",
+                [
+                  "{}",
+                  [
+                    ":style",
+                    [
+                      "merge",
+                      "ui/fullscreen",
+                      "ui/center",
+                      [
+                        "{}",
+                        [
+                          ":position",
+                          ":absolute"
+                        ],
+                        [
+                          ":z-index",
+                          "-10"
+                        ]
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  "create-element",
+                  ":video",
+                  [
+                    "{}",
+                    [
+                      ":style",
+                      [
+                        "{}",
+                        [
+                          ":width",
+                          "|100%"
+                        ]
+                      ]
+                    ],
+                    [
+                      ":src",
+                      "|/videos/diandian.mov"
+                    ],
+                    [
+                      ":autoplay",
+                      "true"
+                    ],
+                    [
+                      ":muted",
+                      "true"
+                    ],
+                    [
+                      ":loop",
+                      "true"
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "div",
+                [
+                  "{}",
+                  [
+                    ":style",
+                    "ui/expand"
+                  ]
+                ],
+                [
+                  "list->",
+                  [
+                    "{}"
+                  ],
+                  [
+                    "->",
+                    "bullets",
+                    [
+                      "map-indexed",
+                      [
+                        "fn",
+                        [
+                          "idx",
+                          "bullet"
+                        ],
+                        [
+                          "let",
+                          [
+                            [
+                              "bullet-progress",
+                              "bullet.:progress"
+                            ],
+                            [
+                              "bullet-rand",
+                              "bullet.:rand"
+                            ],
+                            [
+                              "dx",
+                              [
+                                "->",
+                                [
+                                  "-",
+                                  "bullet-progress",
+                                  "progress"
+                                ],
+                                [
+                                  "/",
+                                  "display-duration"
+                                ],
+                                [
+                                  "*",
+                                  "window-width"
+                                ],
+                                "negate",
+                                [
+                                  "+",
+                                  [
+                                    "*",
+                                    "0.25",
+                                    "window-width"
+                                  ]
+                                ]
+                              ]
+                            ]
+                          ],
+                          [
+                            "[]",
+                            "idx",
+                            [
+                              "div",
+                              [
+                                "{}",
+                                [
+                                  ":style",
+                                  [
+                                    "{}",
+                                    [
+                                      ":position",
+                                      ":absolute"
+                                    ],
+                                    [
+                                      ":top",
+                                      [
+                                        "->",
+                                        "window-height",
+                                        [
+                                          "+",
+                                          "400"
+                                        ],
+                                        [
+                                          "-",
+                                          "dx"
+                                        ]
+                                      ]
+                                    ],
+                                    [
+                                      ":right",
+                                      [
+                                        "->",
+                                        "window-width",
+                                        [
+                                          "-",
+                                          "40"
+                                        ],
+                                        [
+                                          "*",
+                                          "bullet-rand"
+                                        ],
+                                        [
+                                          "+",
+                                          "40"
+                                        ]
+                                      ]
+                                    ]
+                                  ]
+                                ]
+                              ],
+                              [
+                                "comp-bullet",
+                                "bullet.:content",
+                                "bullet.:color"
+                              ]
+                            ]
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "when",
+                "dev?",
+                [
+                  "comp-reel",
+                  [
+                    ">>",
+                    "states",
+                    ":reel"
+                  ],
+                  "reel",
+                  [
+                    "{}"
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.comp.container/comp-container",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'respo.schema/Component"
+          ],
+          [
+            ":args",
+            [
+              "[]",
+              [
+                "::",
+                "'Map",
+                "'Tag",
+                "'Dynamic"
+              ]
+            ]
+          ],
+          [
+            ":features",
+            [
+              "#{}",
+              ":js-ffi"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:a8fe51fc9fab5851280c8fc5e385de63",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defcomp",
+          "comp-footer",
+          [],
+          [
+            "div",
+            [
+              "{}",
+              [
+                ":style",
+                [
+                  "merge",
+                  "ui/row-parted",
+                  [
+                    "{}",
+                    [
+                      ":padding",
+                      "|8px 16px"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "div",
+              [
+                "{}",
+                [
+                  ":style",
+                  [
+                    "merge",
+                    "ui/row-middle"
+                  ]
+                ]
+              ],
+              [
+                "span",
+                [
+                  "{}",
+                  [
+                    ":inner-text",
+                    "|开始/暂停"
+                  ],
+                  [
+                    ":on-click",
+                    [
+                      "fn",
+                      [
+                        "e",
+                        "d!"
+                      ],
+                      [
+                        "d!",
+                        [
+                          "Op",
+                          ":toggle"
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "=<",
+                "8",
+                "&unit"
+              ],
+              [
+                "div",
+                [
+                  "{}",
+                  [
+                    ":style",
+                    [
+                      "{}",
+                      [
+                        ":width",
+                        "200"
+                      ],
+                      [
+                        ":height",
+                        "32"
+                      ],
+                      [
+                        ":background-color",
+                        ":white"
+                      ],
+                      [
+                        ":padding",
+                        "|0 8px"
+                      ],
+                      [
+                        ":border-radius",
+                        "|4px"
+                      ]
+                    ]
+                  ],
+                  [
+                    ":value",
+                    "|"
+                  ],
+                  [
+                    ":on-click",
+                    [
+                      "fn",
+                      [
+                        "e",
+                        "d!"
+                      ],
+                      [
+                        "match",
+                        [
+                          "prompt-text",
+                          "|弹幕内容"
+                        ],
+                        [
+                          [
+                            ":some",
+                            "content"
+                          ],
+                          [
+                            "do",
+                            [
+                              "reset-timer!"
+                            ],
+                            [
+                              "d!",
+                              [
+                                "Op",
+                                ":bullet",
+                                "content",
+                                [
+                                  "random"
+                                ],
+                                "|white"
+                              ]
+                            ]
+                          ]
+                        ],
+                        [
+                          [
+                            ":none"
+                          ],
+                          "&unit"
+                        ]
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  "<>",
+                  "|发弹幕",
+                  [
+                    "{}",
+                    [
+                      ":color",
+                      "|#aaa"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "span",
+              [
+                "{}",
+                [
+                  ":inner-text",
+                  "|重新开始"
+                ],
+                [
+                  ":on-click",
+                  [
+                    "fn",
+                    [
+                      "e",
+                      "d!"
+                    ],
+                    [
+                      "d!",
+                      [
+                        "Op",
+                        ":restart"
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.comp.container/comp-footer",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'respo.schema/Component"
+          ],
+          [
+            ":args",
+            [
+              "[]"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:e816b5b0fed5982cf49404643c59c3c8",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defcomp",
+          "comp-progress",
+          [
+            "progress"
+          ],
+          [
+            "let",
+            [
+              [
+                "ratio",
+                [
+                  "/",
+                  "progress",
+                  "video-length"
+                ]
+              ]
+            ],
+            [
+              "div",
+              [
+                "{}",
+                [
+                  ":style",
+                  [
+                    "{}",
+                    [
+                      ":padding",
+                      "|0px 8px"
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "div",
+                [
+                  "{}",
+                  [
+                    ":style",
+                    [
+                      "{}",
+                      [
+                        ":height",
+                        "12"
+                      ],
+                      [
+                        ":border-top",
+                        [
+                          "str",
+                          "|1px solid ",
+                          [
+                            "hsl",
+                            "0",
+                            "0",
+                            "50"
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  "div",
+                  [
+                    "{}",
+                    [
+                      ":style",
+                      [
+                        "{}",
+                        [
+                          ":height",
+                          "16"
+                        ],
+                        [
+                          ":border-right",
+                          [
+                            "str",
+                            "|8px solid ",
+                            [
+                              "hsl",
+                              "0",
+                              "0",
+                              "90",
+                              [
+                                "Option",
+                                ":some",
+                                "0.7"
+                              ]
+                            ]
+                          ]
+                        ],
+                        [
+                          ":bottom",
+                          "8"
+                        ],
+                        [
+                          ":position",
+                          ":relative"
+                        ],
+                        [
+                          ":width",
+                          [
+                            "str",
+                            [
+                              "*",
+                              "ratio",
+                              "100"
+                            ],
+                            "|%"
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.comp.container/comp-progress",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'respo.schema/Component"
+          ],
+          [
+            ":args",
+            [
+              "[]",
+              "'Number"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:6d5b146554ca74d067d094249903b70c",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defn",
+          "prompt-text",
+          [
+            "message"
+          ],
+          [
+            "js-ffi.browser/prompt!",
+            "message"
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.comp.container/prompt-text",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":args",
+            [
+              "[]",
+              "'String"
+            ]
+          ],
+          [
+            ":features",
+            [
+              "#{}",
+              ":js-ffi"
+            ]
+          ],
+          [
+            ":return",
+            [
+              "::",
+              "'Option",
+              "'String"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:0e7e6904f0aea2b949427dbf73a4c007",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "def",
+          "dev?",
+          [
+            "=",
+            "|dev",
+            [
+              "option:unwrap-or",
+              [
+                "get-env",
+                "|mode"
+              ],
+              "|release"
+            ]
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.config/dev?",
+        "js_ffi": null,
+        "schema": "'Bool",
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:0cdd8b0d7c2ecaf013b0ca3d6e46e55e",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "def",
+          "display-duration",
+          [
+            "*",
+            "1000",
+            "20"
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.config/display-duration",
+        "js_ffi": null,
+        "schema": "'Number",
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:009f819dfa651cc68100f2636099f240",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "def",
+          "site",
+          [
+            "{}",
+            [
+              ":storage-key",
+              "|bullet-train"
+            ]
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.config/site",
+        "js_ffi": null,
+        "schema": [
+          "::",
+          "'Map",
+          "'Tag",
+          "'String"
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:f2a338ecdb9c8e351ed3fdcd2487ce3c",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "def",
+          "video-length",
+          [
+            "*",
+            "1000",
+            "60",
+            "4"
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.config/video-length",
+        "js_ffi": null,
+        "schema": "'Number",
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:bf7fd1b19ce65b83420ad174e9be97bf",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defref",
+          "*auto-bullets",
+          "0"
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.main/*auto-bullets",
+        "js_ffi": null,
+        "schema": [
+          "::",
+          "'Ref",
+          "'Number"
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:987408cfb4b8ba4b222ea3c22256d085",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defref",
+          "*reel",
+          [
+            "->",
+            "reel-schema/reel",
+            [
+              "assoc",
+              ":base",
+              "app.schema/store"
+            ],
+            [
+              "assoc",
+              ":store",
+              "app.schema/store"
+            ]
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.main/*reel",
+        "js_ffi": null,
+        "schema": [
+          "::",
+          "'Ref",
+          [
+            "::",
+            "'Map",
+            "'Tag",
+            "'Dynamic"
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:f14561166020874e57ded7685744c393",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defref",
+          "*ticking",
+          "0"
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.main/*ticking",
+        "js_ffi": null,
+        "schema": [
+          "::",
+          "'Ref",
+          "'Number"
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:d65e763c13df2bad9fb7a2f6b014e673",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defn",
+          "dispatch!",
+          [
+            "op"
+          ],
+          [
+            "when",
+            "config/dev?",
+            [
+              "println",
+              "|Dispatch:",
+              "op"
+            ]
+          ],
+          [
+            "reset!",
+            "*reel",
+            [
+              "reel-updater",
+              "app.updater/update-wire-store",
+              "@*reel",
+              "op"
+            ]
+          ],
+          "&unit"
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.main/dispatch!",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'Unit"
+          ],
+          [
+            ":args",
+            [
+              "[]",
+              "'app.schema/Op"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:cfd56c11455c7ac8a73a571926c5789d",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defn",
+          "dispatch-wire!",
+          [
+            "op"
+          ],
+          [
+            "if",
+            [
+              "reel.core/reel-control-op?",
+              "op"
+            ],
+            [
+              "reset!",
+              "*reel",
+              [
+                "reel-updater",
+                "app.updater/update-wire-store",
+                "@*reel",
+                "op"
+              ]
+            ],
+            [
+              "dispatch!",
+              [
+                "decode-map-as",
+                "op",
+                "'app.schema/Op"
+              ]
+            ]
+          ],
+          "&unit"
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.main/dispatch-wire!",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'Unit"
+          ],
+          [
+            ":args",
+            [
+              "[]",
+              "'Dynamic"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:ce587083584f8c5c88fcad565ee9ef6b",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defn",
+          "main!",
+          [],
+          [
+            "println",
+            "|Running mode:",
+            [
+              "if",
+              "config/dev?",
+              "|dev",
+              "|release"
+            ]
+          ],
+          [
+            "render-app!"
+          ],
+          [
+            "add-watch!",
+            "*reel",
+            ":changes",
+            [
+              "fn",
+              [
+                "reel",
+                "prev"
+              ],
+              [
+                "render-app!"
+              ]
+            ]
+          ],
+          [
+            "listen-devtools!",
+            "|k",
+            "dispatch-wire!"
+          ],
+          [
+            "add-event-listener!",
+            "|beforeunload",
+            [
+              "fn",
+              [
+                "event"
+              ],
+              [
+                "persist-storage!"
+              ]
+            ]
+          ],
+          [
+            "repeat!",
+            "60",
+            "persist-storage!"
+          ],
+          [
+            "random-bullets!"
+          ],
+          [
+            "start-tick!"
+          ],
+          [
+            "println",
+            "|App started."
+          ],
+          "&unit"
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.main/main!",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'Unit"
+          ],
+          [
+            ":args",
+            [
+              "[]"
+            ]
+          ],
+          [
+            ":features",
+            [
+              "#{}",
+              ":js-ffi"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:498b36b894ea7254d9e9e1480ebbe7b3",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "def",
+          "mount-target",
+          [
+            "option:unwrap",
+            [
+              "respo.ffi.browser/query-selector",
+              "|.app"
+            ]
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.main/mount-target",
+        "js_ffi": null,
+        "schema": "'respo.dom/DomElement",
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:72de623498cd078d803d51e92898ddc4",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defn",
+          "persist-storage!",
+          [],
+          [
+            "storage-set!",
+            [
+              "option:unwrap",
+              [
+                "get",
+                "config/site",
+                ":storage-key"
+              ]
+            ],
+            [
+              "format-cirru-edn",
+              [
+                "app.schema/read-store",
+                [
+                  "option:unwrap",
+                  [
+                    "get",
+                    "@*reel",
+                    ":store"
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.main/persist-storage!",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'Unit"
+          ],
+          [
+            ":args",
+            [
+              "[]"
+            ]
+          ],
+          [
+            ":features",
+            [
+              "#{}",
+              ":js-ffi"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:e73428ed3406d7dfe396dae93decd306",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defn",
+          "rand-content!",
+          [],
+          [
+            "let",
+            [
+              [
+                "size",
+                [
+                  "+",
+                  "2",
+                  [
+                    "floor",
+                    [
+                      "*",
+                      "6",
+                      [
+                        "random"
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "->",
+              [
+                "range",
+                "size"
+              ],
+              [
+                "map",
+                [
+                  "fn",
+                  [
+                    "idx"
+                  ],
+                  [
+                    "if",
+                    [
+                      ">",
+                      [
+                        "random"
+                      ],
+                      "0.6"
+                    ],
+                    "|呜",
+                    "|喵"
+                  ]
+                ]
+              ],
+              [
+                "join-string",
+                "|"
+              ]
+            ]
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.main/rand-content!",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'String"
+          ],
+          [
+            ":args",
+            [
+              "[]"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:8c5d99ecf0740f13f67b776f126334c5",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defn",
+          "random-bullets!",
+          [],
+          [
+            "reset!",
+            "*auto-bullets",
+            [
+              "set-interval!",
+              [
+                "fn",
+                [],
+                [
+                  "set-timeout!",
+                  [
+                    "fn",
+                    [],
+                    [
+                      "&doseq",
+                      [
+                        "_",
+                        [
+                          "range",
+                          "8"
+                        ]
+                      ],
+                      [
+                        "dispatch!",
+                        [
+                          "app.schema/Op",
+                          ":bullet",
+                          [
+                            "rand-content!"
+                          ],
+                          [
+                            "random"
+                          ],
+                          [
+                            "if",
+                            [
+                              ">",
+                              [
+                                "random"
+                              ],
+                              "0.8"
+                            ],
+                            [
+                              "hsl",
+                              [
+                                "*",
+                                "360",
+                                [
+                                  "random"
+                                ]
+                              ],
+                              "90",
+                              "70"
+                            ],
+                            "|white"
+                          ]
+                        ]
+                      ]
+                    ]
+                  ],
+                  [
+                    "*",
+                    "2000",
+                    [
+                      "random"
+                    ]
+                  ]
+                ],
+                "&unit"
+              ],
+              "400"
+            ]
+          ],
+          "&unit"
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.main/random-bullets!",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'Unit"
+          ],
+          [
+            ":args",
+            [
+              "[]"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:b017791ea1a71a021a40af7080a0dba6",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defn",
+          "reload!",
+          [],
+          [
+            "if",
+            [
+              "nil?",
+              "build-errors"
+            ],
+            [
+              "do",
+              [
+                "remove-watch!",
+                "*reel",
+                ":changes"
+              ],
+              [
+                "clear-cache!"
+              ],
+              [
+                "add-watch!",
+                "*reel",
+                ":changes",
+                [
+                  "fn",
+                  [
+                    "reel",
+                    "prev"
+                  ],
+                  [
+                    "render-app!"
+                  ]
+                ]
+              ],
+              [
+                "reset!",
+                "*reel",
+                [
+                  "decode-map-as",
+                  [
+                    "refresh-reel",
+                    "@*reel",
+                    "app.schema/store",
+                    "app.updater/update-wire-store"
+                  ],
+                  [
+                    "::",
+                    "'Map",
+                    "'Tag",
+                    "'Dynamic"
+                  ]
+                ]
+              ],
+              [
+                "clear-timeout!",
+                "@*ticking"
+              ],
+              [
+                "clear-interval!",
+                "@*auto-bullets"
+              ],
+              [
+                "random-bullets!"
+              ],
+              [
+                "start-tick!"
+              ],
+              [
+                "hud!",
+                "|ok~",
+                "|Ok"
+              ]
+            ],
+            [
+              "hud!",
+              "|error",
+              "build-errors"
+            ]
+          ],
+          "&unit"
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.main/reload!",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'Unit"
+          ],
+          [
+            ":args",
+            [
+              "[]"
+            ]
+          ],
+          [
+            ":features",
+            [
+              "#{}",
+              ":js-ffi"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:c5ef9b3b81a855a6e0a9a785650a5d29",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defn",
+          "render-app!",
+          [],
+          [
+            "render!",
+            "mount-target",
+            [
+              "comp-container",
+              "@*reel"
+            ],
+            "dispatch-wire!"
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.main/render-app!",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'Unit"
+          ],
+          [
+            ":args",
+            [
+              "[]"
+            ]
+          ],
+          [
+            ":features",
+            [
+              "#{}",
+              ":js-ffi"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:96f0f36ddf55811b874a905c9efd46c4",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defn",
+          "repeat!",
+          [
+            "duration",
+            "callback"
+          ],
+          [
+            "set-interval!",
+            "callback",
+            [
+              "*",
+              "1000",
+              "duration"
+            ]
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.main/repeat!",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'Number"
+          ],
+          [
+            ":args",
+            [
+              "[]",
+              "'Number",
+              [
+                "::",
+                "'Fn",
+                [
+                  "{}",
+                  [
+                    ":return",
+                    "'Unit"
+                  ],
+                  [
+                    ":args",
+                    [
+                      "[]"
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:06c728f70e97f5338d38238bbd1f1ce1",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defn",
+          "start-tick!",
+          [],
+          [
+            "reset!",
+            "*ticking",
+            [
+              "set-timeout!",
+              [
+                "fn",
+                [],
+                [
+                  "let",
+                  [
+                    [
+                      "delta",
+                      [
+                        "delta-time!"
+                      ]
+                    ],
+                    [
+                      "store",
+                      [
+                        "app.schema/read-store",
+                        [
+                          "option:unwrap",
+                          [
+                            "get",
+                            "@*reel",
+                            ":store"
+                          ]
+                        ]
+                      ]
+                    ]
+                  ],
+                  [
+                    "when",
+                    "store.:playing?",
+                    [
+                      "dispatch!",
+                      [
+                        "app.schema/Op",
+                        ":tick",
+                        "delta"
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  "start-tick!"
+                ]
+              ],
+              "20"
+            ]
+          ],
+          "&unit"
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.main/start-tick!",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'Unit"
+          ],
+          [
+            ":args",
+            [
+              "[]"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:890a8e10929a4adde9579d678e78a70a",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defstruct",
+          "Bullet",
+          [
+            ":progress",
+            "'Number"
+          ],
+          [
+            ":content",
+            "'String"
+          ],
+          [
+            ":rand",
+            "'Number"
+          ],
+          [
+            ":color",
+            "'String"
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.schema/Bullet",
+        "js_ffi": null,
+        "schema": "'StructDef",
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:b36bc84af3c969c07d860d259556c0aa",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defenum",
+          "Op",
+          [
+            ":states",
+            [
+              "::",
+              "'List",
+              "'Dynamic"
+            ],
+            "'Dynamic"
+          ],
+          [
+            ":hydrate-storage",
+            "'app.schema/Store"
+          ],
+          [
+            ":tick",
+            "'Number"
+          ],
+          [
+            ":toggle"
+          ],
+          [
+            ":restart"
+          ],
+          [
+            ":bullet",
+            "'String",
+            "'Number",
+            "'String"
+          ],
+          [
+            ":reel/toggle"
+          ],
+          [
+            ":reel/recall",
+            "'Number"
+          ],
+          [
+            ":reel/run"
+          ],
+          [
+            ":reel/step"
+          ],
+          [
+            ":reel/merge"
+          ],
+          [
+            ":reel/reset"
+          ],
+          [
+            ":reel/remove",
+            "'Number"
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.schema/Op",
+        "js_ffi": null,
+        "schema": "'EnumDef",
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:537c5c84380ed92bb760dc28fca2f5be",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defstruct",
+          "Store",
+          [
+            ":states",
+            [
+              "::",
+              "'Map",
+              "'Tag",
+              "'Dynamic"
+            ]
+          ],
+          [
+            ":progress",
+            "'Number"
+          ],
+          [
+            ":playing?",
+            "'Bool"
+          ],
+          [
+            ":bullets",
+            [
+              "::",
+              "'List",
+              "'app.schema/Bullet"
+            ]
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.schema/Store",
+        "js_ffi": null,
+        "schema": "'StructDef",
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:a77964e386c55956f8de60156fe0b41d",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "def",
+          "bullet",
+          [
+            "Bullet",
+            ":progress",
+            "0",
+            ":content",
+            "|",
+            ":rand",
+            "1",
+            ":color",
+            "|white"
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.schema/bullet",
+        "js_ffi": null,
+        "schema": "'app.schema/Bullet",
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:49dc68d9484593e487634a353cf17569",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defn",
+          "read-store",
+          [
+            "value"
+          ],
+          [
+            "if",
+            [
+              "struct?",
+              "value"
+            ],
+            [
+              "struct-match",
+              "value",
+              [
+                "Store",
+                "current",
+                "current"
+              ],
+              [
+                "_",
+                "other",
+                [
+                  "raise",
+                  "|Expected-Store"
+                ]
+              ]
+            ],
+            [
+              "raise",
+              "|Expected-Store"
+            ]
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.schema/read-store",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'app.schema/Store"
+          ],
+          [
+            ":args",
+            [
+              "[]",
+              "'Dynamic"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:97282db23cd3d0b2ab431fb2419ecaab",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "def",
+          "store",
+          [
+            "Store",
+            ":states",
+            [
+              "{}",
+              [
+                ":cursor",
+                [
+                  "[]"
+                ]
+              ]
+            ],
+            ":progress",
+            "0",
+            ":playing?",
+            "true",
+            ":bullets",
+            [
+              "[]"
+            ]
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.schema/store",
+        "js_ffi": null,
+        "schema": "'app.schema/Store",
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:d9cf911154bf256b702835ae4bfb165b",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defref",
+          "*tracked-time",
+          [
+            "now-ms"
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.timer/*tracked-time",
+        "js_ffi": null,
+        "schema": [
+          "::",
+          "'Ref",
+          "'Number"
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:1d9e001b71e376f1cf4a13c00ea10db4",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defn",
+          "delta-time!",
+          [],
+          [
+            "let",
+            [
+              [
+                "now",
+                [
+                  "now-ms"
+                ]
+              ],
+              [
+                "delta",
+                [
+                  "-",
+                  "now",
+                  "@*tracked-time"
+                ]
+              ]
+            ],
+            [
+              "reset!",
+              "*tracked-time",
+              "now"
+            ],
+            "delta"
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.timer/delta-time!",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'Number"
+          ],
+          [
+            ":args",
+            [
+              "[]"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:d1e14230cf6b9b4df4f13ce35a0d7e85",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defn",
+          "reset-timer!",
+          [],
+          [
+            "reset!",
+            "*tracked-time",
+            [
+              "now-ms"
+            ]
+          ],
+          "&unit"
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.timer/reset-timer!",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'Unit"
+          ],
+          [
+            ":args",
+            [
+              "[]"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:9499d27e3362f714255d42129a0e2d2e",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defn",
+          "update-wire-store",
+          [
+            "store",
+            "op",
+            "op-id",
+            "op-time"
+          ],
+          [
+            "updater",
+            [
+              "app.schema/read-store",
+              "store"
+            ],
+            [
+              "decode-map-as",
+              "op",
+              "'app.schema/Op"
+            ],
+            [
+              "decode-map-as",
+              "op-id",
+              "'String"
+            ],
+            [
+              "decode-map-as",
+              "op-time",
+              "'Number"
+            ]
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.updater/update-wire-store",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'app.schema/Store"
+          ],
+          [
+            ":args",
+            [
+              "[]",
+              "'Dynamic",
+              "'Dynamic",
+              "'Dynamic",
+              "'Dynamic"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:3d5cbee0b45162ca5590391554faaec5",
+      "schema_version": 1
+    },
+    {
+      "command": "query.def",
+      "data": {
+        "code": [
+          "defn",
+          "updater",
+          [
+            "store",
+            "op",
+            "op-id",
+            "op-time"
+          ],
+          [
+            "match",
+            "op",
+            [
+              [
+                ":states",
+                "cursor",
+                "data"
+              ],
+              [
+                "app.schema/read-store",
+                [
+                  "update-states",
+                  "store",
+                  "cursor",
+                  "data"
+                ]
+              ]
+            ],
+            [
+              [
+                ":hydrate-storage",
+                "data"
+              ],
+              "data"
+            ],
+            [
+              [
+                ":tick",
+                "data"
+              ],
+              [
+                "let",
+                [
+                  [
+                    "next-progress",
+                    [
+                      "+",
+                      "store.:progress",
+                      "data"
+                    ]
+                  ]
+                ],
+                [
+                  "if",
+                  [
+                    ">=",
+                    "next-progress",
+                    "config/video-length"
+                  ],
+                  [
+                    "->",
+                    "store",
+                    [
+                      "assoc",
+                      ":progress",
+                      "config/video-length"
+                    ],
+                    [
+                      "assoc",
+                      ":playing?",
+                      "false"
+                    ]
+                  ],
+                  [
+                    "assoc",
+                    "store",
+                    ":progress",
+                    "next-progress"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                ":toggle"
+              ],
+              [
+                "update",
+                "store",
+                ":playing?",
+                "not"
+              ]
+            ],
+            [
+              [
+                ":restart"
+              ],
+              [
+                "->",
+                "store",
+                [
+                  "assoc",
+                  ":progress",
+                  "0"
+                ],
+                [
+                  "assoc",
+                  ":playing?",
+                  "true"
+                ]
+              ]
+            ],
+            [
+              [
+                ":bullet",
+                "content",
+                "rand",
+                "color"
+              ],
+              [
+                "let",
+                [
+                  [
+                    "items0",
+                    "store.:bullets"
+                  ],
+                  [
+                    "items",
+                    [
+                      "if",
+                      [
+                        ">",
+                        [
+                          "count",
+                          "items0"
+                        ],
+                        "800"
+                      ],
+                      [
+                        "slice",
+                        "items0",
+                        "600"
+                      ],
+                      "items0"
+                    ]
+                  ]
+                ],
+                [
+                  "assoc",
+                  "store",
+                  ":bullets",
+                  [
+                    "conj",
+                    "items",
+                    [
+                      "app.schema/Bullet",
+                      ":progress",
+                      "store.:progress",
+                      ":content",
+                      "content",
+                      ":rand",
+                      "rand",
+                      ":color",
+                      "color"
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "_",
+              [
+                "do",
+                [
+                  "println",
+                  "|unknown op:",
+                  "op"
+                ],
+                "store"
+              ]
+            ]
+          ]
+        ],
+        "doc": "",
+        "examples": [],
+        "ffi": null,
+        "ffi_edn": null,
+        "id": "app.updater/updater",
+        "js_ffi": null,
+        "schema": [
+          "{}",
+          [
+            ":kind",
+            ":fn"
+          ],
+          [
+            ":return",
+            "'app.schema/Store"
+          ],
+          [
+            ":args",
+            [
+              "[]",
+              "'app.schema/Store",
+              "'app.schema/Op",
+              "'String",
+              "'Number"
+            ]
+          ]
+        ],
+        "tags": [],
+        "tests": []
+      },
+      "diagnostics": [],
+      "revision": "md5:cfd3c463bd7ab34eba9a0bfb1baf0cf8",
+      "schema_version": 1
+    }
+  ],
+  "config": {
+    "schema_version": 1,
+    "command": "config.show",
+    "data": {
+      "package": "app",
+      "version": "0.0.5",
+      "selected_entry": null,
+      "entries": [
+        {
+          "name": "default",
+          "mode": "js",
+          "target": "browser",
+          "init_fn": "app.main/main!",
+          "reload_fn": "app.main/reload!",
+          "description": "",
+          "modules": [
+            "respo.calcit/",
+            "respo-ui.calcit/",
+            "reel.calcit/"
+          ],
+          "type_slots": {
+            "dispatch-op": "app.schema/Op"
+          },
+          "feature_policy": {}
+        }
+      ],
+      "verification_schema_version": 1,
+      "verification_profiles": []
+    },
+    "diagnostics": [],
+    "revision": "md5:6a5e386ade576a3aa1b7ee1f14cf4d67"
+  }
+}
