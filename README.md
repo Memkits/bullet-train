@@ -7,10 +7,27 @@ Bullet(Screen) train
 Demo _TODO_ .
 
 使用配对的正式 Calcit/procs **0.30.1**、Caps 0.1.1、Node.js 24 和 Yarn 4.18.0。
-模块使用正式 Reel 0.6.41、Respo 0.16.124、UI 0.8.0 和 js-ffi 0.2.5；
+模块升级为正式 Reel 0.6.42、Respo 0.16.126、UI 0.8.1 和 js-ffi 0.2.6；
 保留公开业务操作和存档格式，仍只写入存档、不新增恢复行为。
 修复开发态 Reel 操作入口：快捷键和面板的 `:reel/*` 操作交给 Reel 自身处理，
 业务操作才解码成应用的具名 `Op`，避免把两种不同的枚举身份混为一谈。
+
+本轮继续迁移源码旧 Option/Map 调用和真实弹幕 List 的 count→`.len`，去掉一次单参数
+merge，保留原顺序、默认值和裁剪阈值。叠层样式使用等价 `absolute` / `-10` String，
+匹配已发布 UI 的 String Map；z-index 是无单位属性，不增加 px。原内联值类型改变，
+CSS 表现目标不变，不通过放宽类型或强转绕过检查。
+Vite 升级 8.3.3；其他 npm 依赖不变，移除包预批准、不添加新安装例外。
+真实 `hud!` 成功/错误路径保留，不改成 raise。原 7 项业务断言不改，不新增永久检查脚本、
+测试框架、预算或 concurrently。正式 CI 和实际页面仍需独立验收，版本声明不等于完成。
+源码仅由官方 Linux 0.30.1 的结构化事务生成；本地不执行 Caps 或编译器 check/build/
+codegen/Snapshot 写入，只读 query/tree 与跳过脚本的 Yarn 锁文件更新允许。
+
+[官方准备 CI 40123169334](https://github.com/Memkits/bullet-train/actions/runs/40123169334)
+已通过严格完整依赖图、全部定义、完整 strict（诊断为空）、零 deprecated、修改前后各
+7/7 原 JS 测试（零失败/跳过）及生产构建；本仓库没有附着原生测试，不以空集合声称原生测试通过。
+成功产物 SHA256 及全部 36 个定义/配置已核对。全新本地来源实际显示彩色自动弹幕，
+刷新后重新启动；媒体区域因未提供原视频显示无法播放，不声称视频播放、footer 页面交互、
+持久化恢复或热更新 HUD 注错已验收。最终 PR CI/COS 内置校验仍需另行通过。
 
 播放进度、弹幕内容/位置、裁剪规则和 `/videos/diandian.mov` 地址保持不变。
 入口继续生成自动弹幕；原有 footer/progress 组件没有在主界面挂载，本轮不新增界面功能。
@@ -49,7 +66,7 @@ without extra CDN checker scripts.
 
 Use `yarn build` to compile once and build Vite with `VITE_BASE_URL` (relative
 URLs by default). `yarn dev` compiles once before starting Vite; for live Calcit
-edits, run `calcit calcit.cirru -w` in another terminal. No extra process
+edits, run `calcit calcit.cirru js -w` in another terminal. No extra process
 manager is needed.
 
 ### Workflow
