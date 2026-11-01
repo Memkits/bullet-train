@@ -1,39 +1,24 @@
+# Bullet Train
 
-Bullet(Screen) train
-----
+可回复弹幕的原型，目前主页面自动生成彩色弹幕。
 
-> a prototype, if bullet screen can be replied
+## 使用者需要注意
 
-Demo _TODO_ .
+配对正式 **Calcit / @calcit/procs 0.32.1**、Caps 0.1.1、Node 24、Yarn 4.18.0，模块使用正式 Reel 0.7.0、Respo 0.17.1、UI 0.9.0 和 JS FFI 0.2.9。UI 自身的 Router 0.9.0-alpha.4 传递依赖保留，不引用 main/hash。升级后重装完整依赖图、重新生成 JS、重启并刷新，不混用旧 runtime。
 
-使用配对的正式 Calcit/procs **0.30.1**、Caps 0.1.1、Node.js 24 和 Yarn 4.18.0。
-模块升级为正式 Reel 0.6.42、Respo 0.16.126、UI 0.8.1 和 js-ffi 0.2.6；
-保留公开业务操作和存档格式，仍只写入存档、不新增恢复行为。
-修复开发态 Reel 操作入口：快捷键和面板的 `:reel/*` 操作交给 Reel 自身处理，
-业务操作才解码成应用的具名 `Op`，避免把两种不同的枚举身份混为一谈。
+弹幕内容、位置、播放进度、裁剪阈值及 `/videos/diandian.mov` 地址保持。仓库没有原视频，页面会显示媒体无法播放；不能把弹幕可见等同视频播放通过。原 footer/progress 没有在主页面挂载，本轮不增加界面功能。
 
-本轮继续迁移源码旧 Option/Map 调用和真实弹幕 List 的 count→`.len`，去掉一次单参数
-merge，保留原顺序、默认值和裁剪阈值。叠层样式使用等价 `absolute` / `-10` String，
-匹配已发布 UI 的 String Map；z-index 是无单位属性，不增加 px。原内联值类型改变，
-CSS 表现目标不变，不通过放宽类型或强转绕过检查。
-Vite 升级 8.3.3；其他 npm 依赖不变，移除包预批准、不添加新安装例外。
-真实 `hud!` 成功/错误路径保留，不改成 raise。原 7 项业务断言不改，不新增永久检查脚本、
-测试框架、预算或 concurrently。正式 CI 和实际页面仍需独立验收，版本声明不等于完成。
-源码仅由官方 Linux 0.30.1 的结构化事务生成；本地不执行 Caps 或编译器 check/build/
-codegen/Snapshot 写入，只读 query/tree 与跳过脚本的 Yarn 锁文件更新允许。
+原存储键及 Map 格式保持，入口仍只写入存档，刷新重新启动自动弹幕，不新增存档读取或恢复。`hud!` 仍由 JS 提供页面成功/编译错误提示，不用 raise 或控制台日志替代。
 
-[官方准备 CI 40123169334](https://github.com/Memkits/bullet-train/actions/runs/40123169334)
-已通过严格完整依赖图、全部定义、完整 strict（诊断为空）、零 deprecated、修改前后各
-7/7 原 JS 测试（零失败/跳过）及生产构建；本仓库没有附着原生测试，不以空集合声称原生测试通过。
-成功产物 SHA256 及全部 36 个定义/配置已核对。全新本地来源实际显示彩色自动弹幕，
-刷新后重新启动；媒体区域因未提供原视频显示无法播放，不声称视频播放、footer 页面交互、
-持久化恢复或热更新 HUD 注错已验收。最终 PR CI/COS 内置校验仍需另行通过。
+## 本次迁移与风险
 
-播放进度、弹幕内容/位置、裁剪规则和 `/videos/diandian.mov` 地址保持不变。
-入口继续生成自动弹幕；原有 footer/progress 组件没有在主界面挂载，本轮不新增界面功能。
-Store 在 Reel 边界做名义检查，操作通过已有具名 Op 的实际解码进入 updater；
-不在每个 tick 递归重建弹幕列表。DOM 和 prompt 使用模块已发布接口，移除两处 unsafe。
-原持久化格式不变；原入口只有写入存档，本轮不新增读取/恢复行为。
+官方 formatter 转换三处旧类型形式。34个既有完整官方视图中，仅 render-app! 的渲染回调代码变化，既有 schema/tests/meta 不变；新增开放 Enum 的 DispatchOp 代表定义以绑定入口类型槽，代表值不发送。
+
+渲染回调明确接收 Enum 后交给原 dispatch-wire!。原入口继续先区分 Reel 控制，再将业务操作解码成名义 Op；业务 dispatch! 仍只接受应用 Op，DevTools 仍经过原 Dynamic 边界。没有把匿名控制操作伪装成业务 Op，也没有取消运行时检查、增加事件包装或改变 updater。
+
+依赖、runtime 和 lock 配对，一小时 npm 包龄无单包例外；原 CI、权限、精确正式 Action tags、COS verify 和部署路径不改。开放 Reel/wire 边界仍有真实 Dynamic，不宣称债务清零，不增加类型预算、强转或编译器 fix/proof 规则。
+
+## 开发与验证
 
 ```sh
 caps --ci --strict
@@ -45,34 +30,18 @@ yarn build
 node --test scripts/bullet-regression.test.mjs
 ```
 
-The canonical project files are
-`calcit.cirru` and `deps.cirru`; CI rejects retired `compact.cirru` and
-`package.cirru` snapshots. Runtime regressions are checked with
-`node --test scripts/bullet-regression.test.mjs` after code generation.
-保留现有 7 项业务回归，通过真实 Reel wire adapter 回放操作，子节点遍历适配到
-Respo 的 ChildPair/RenderNode；不修改原业务断言或增加检查脚本。
+候选通过230个全定义、完整 strict diagnostics=[]、原7项 JS回归及构建；原测试文件/断言保持，没有附带 native 测试，不以空集合计为通过。实际隔离页面验证彩色自动弹幕和刷新后重新启动；媒体文件缺失，未验收视频播放、未挂载 footer 的页面交互、存档恢复或热更新 HUD 注错。不用历史0.30.1证据代替本轮验收。
 
-开放状态和 wire 输入仍有显式 Dynamic，不宣称类型债务清零。本地媒体文件未随仓库提供，
-没有原视频时只能验收自动弹幕和交互逻辑，不能据此宣称视频播放通过。
-移除未被工作流引用的旧 quality 预算文件：其中仍有已删除的 `app.schema/Reel`
-和两处已移除 unsafe 的额度。保留全部定义检查、完整 strict 与原 7 项测试，
-不依赖已退役的 `analyze quality`；strict 报告中四个实际 Reel/wire 边界仍逐项列出。
+`yarn dev` 编译一次后启动 Vite；源码监听另开终端运行 `calcit calcit.cirru js -w`，不添加 concurrently。按照维护者已允许本地使用新工具链的要求，本轮可用官方固定0.32.1执行 query/tree/edit、检查和构建；不再沿用早期仅 Linux 准备 CI 的临时限制。
 
-Only generated frontend assets are uploaded to COS. cos-upload-action handles
-HTML reference and public verification with the released v1.2.0 action’s built-in verify settings. Existing video and server
-deployment paths are unchanged. Each PR uses an isolated
-`pr/<number>/<run-id>/<attempt>/` CDN prefix; path selection stays in the workflow
-without extra CDN checker scripts.
+仅维护 `calcit.cirru` / `deps.cirru`，Snapshot 使用官方 CLI；不恢复 compact.cirru/package.cirru，不提交 js-out/dist，不增加常驻验证脚本。
 
-Use `yarn build` to compile once and build Vite with `VITE_BASE_URL` (relative
-URLs by default). `yarn dev` compiles once before starting Vite; for live Calcit
-edits, run `calcit calcit.cirru js -w` in another terminal. No extra process
-manager is needed.
+## 前端部署
 
-### Workflow
+设置 VITE_BASE_URL 控制 CDN 前缀。COS 只上传 dist/，精确正式 cos-upload-action v1.2.0 内置 HTML 引用及公开内容校验，不复制额外 verify 脚本。PR 沿用独立编号/run/attempt 前缀；原 `/web-assets/repo/Memkits/bullet-train` 目的地和 main-only rsync 保持，不迁移视频或后端。
 
-https://github.com/calcit-lang/respo-calcit-workflow
+模板：[respo-calcit-workflow](https://github.com/calcit-lang/respo-calcit-workflow)。
 
-### License
+## License
 
 MIT
