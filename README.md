@@ -32,7 +32,7 @@ yarn build
 node --test scripts/bullet-regression.test.mjs
 ```
 
-候选通过237个全定义、完整 strict diagnostics=[]、原7项 JS回归及构建；原测试文件/断言保持，没有附带 native 测试，不以空集合计为通过。此前隔离页面验证彩色自动弹幕和刷新后重新启动；媒体文件缺失，未验收视频播放、未挂载 footer 的页面交互、存档恢复或热更新 HUD 注错。不用历史0.30.1证据代替本轮验收。
+候选通过236个全定义、完整 strict diagnostics=[]、原7项 JS回归及构建；原测试文件/断言保持，没有附带 native 测试，不以空集合计为通过。此前隔离页面验证彩色自动弹幕和刷新后重新启动；媒体文件缺失，未验收视频播放、未挂载 footer 的页面交互、存档恢复或热更新 HUD 注错。不用历史0.30.1证据代替本轮验收。
 
 `yarn dev` 编译一次后启动 Vite；源码监听另开终端运行 `calcit calcit.cirru js -w`，不添加 concurrently。按照维护者已允许本地使用新工具链的要求，本轮可用官方固定0.35.1执行 query/tree/edit、检查和构建；不再沿用早期仅 Linux 准备 CI 的临时限制。
 
