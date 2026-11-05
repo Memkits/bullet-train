@@ -48,7 +48,9 @@
                             :top $ -> window-height (+ 400) (- dx)
                             :right $ -> window-width (- 40) (* bullet-rand) (+ 40)
                           comp-bullet bullet.:content bullet.:color
-                when dev? $ comp-reel (>> states :reel) reel $ {}
+                if dev?
+                  Option :some $ comp-reel (>> states :reel) reel $ {}
+                  Option :none
           :examples $ []
           :schema $ quote $ Fn (Map Tag Dynamic) (-> respo.schema/Component) (:features :js-ffi)
         'comp-footer $ %{} 'CodeEntry (:doc |)
@@ -61,7 +63,7 @@
                 span $ {} (:inner-text "|开始/暂停")
                   :on-click $ fn (e d!)
                     d! $ Op :toggle
-                =< 8 &unit
+                space-x 8
                 div
                   {}
                     :style $ {} (:width 200) (:height 32) (:background-color :white) (:padding "|0 8px") (:border-radius |4px)
@@ -106,7 +108,7 @@
           :require (respo-ui.core :as ui)
             respo-ui.core :refer $ hsl
             respo.core :refer $ defcomp defeffect <> >> div button textarea span input list-> create-element
-            respo.comp.space :refer $ =<
+            respo.comp.space :refer $ space-x
             reel.comp.reel :refer $ comp-reel
             app.config :refer $ dev? video-length display-duration
             app.timer :refer $ reset-timer!
@@ -228,7 +230,7 @@
             if (nil? build-errors)
               do (remove-watch! *reel :changes) (clear-cache!)
                 add-watch! *reel :changes $ fn (reel prev) (render-app!)
-                reset! *reel $ decode-map-as (refresh-reel @*reel app.schema/store app.updater/update-wire-store) (:: 'Map 'Tag 'Dynamic)
+                reset! *reel $ decode-map-as (refresh-reel @*reel app.schema/store app.updater/update-wire-store) (Map Tag Dynamic)
                 clear-timeout! @*ticking
                 clear-interval! @*auto-bullets
                 random-bullets!
@@ -285,39 +287,37 @@
     'app.schema $ %{} 'FileEntry
       :defs $ {}
         'Bullet $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defstruct Bullet (:progress 'Number) (:content 'String) (:rand 'Number) (:color 'String)
+          :code $ quote $ defstruct Bullet (:progress Number) (:content String) (:rand Number) (:color String)
           :examples $ []
           :schema $ quote StructDef
         'DispatchOp $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def DispatchOp
             :: :states ([]) nil
           :examples $ []
-          :schema $ quote Enum
+          :schema $ quote AnyEnum
         'Op $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defenum Op
-            :states
-              quote $ List Dynamic
-              , 'Dynamic
-            :hydrate-storage 'app.schema/Store
-            :tick 'Number
+            :states (List respo.schema/CoordKey) Dynamic
+            :hydrate-storage app.schema/Store
+            :tick Number
             :toggle
             :restart
-            :bullet 'String 'Number 'String
+            :bullet String Number String
             :reel/toggle
-            :reel/recall 'Number
+            :reel/recall Number
             :reel/run
             :reel/step
             :reel/merge
             :reel/reset
-            :reel/remove 'Number
+            :reel/remove Number
           :examples $ []
           :schema $ quote EnumDef
         'Store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defstruct Store
-            :states $ quote $ Map Tag Dynamic
-            :progress 'Number
-            :playing? 'Bool
-            :bullets $ quote $ List app.schema/Bullet
+            :states $ Map Tag Dynamic
+            :progress Number
+            :playing? Bool
+            :bullets $ List app.schema/Bullet
           :examples $ []
           :schema $ quote StructDef
         'bullet $ %{} 'CodeEntry (:doc |)
