@@ -4,7 +4,7 @@
 
 ## 使用者需要注意
 
-配对正式 **Calcit / @calcit/procs 0.32.1**、Caps 0.1.1、Node 24、Yarn 4.18.0，模块使用正式 Reel 0.7.0、Respo 0.17.1、UI 0.9.0 和 JS FFI 0.2.9。UI 自身的 Router 0.9.0-alpha.4 传递依赖保留，不引用 main/hash。升级后重装完整依赖图、重新生成 JS、重启并刷新，不混用旧 runtime。
+配对正式 **Calcit / @calcit/procs 0.35.1**、Caps 0.1.1、Node 24、Yarn 4.18.0，模块使用正式 Reel 0.9.2、Respo 0.19.4、UI 0.15.1 和 JS FFI 0.2.13。传递 Router 0.12.1。升级后重装完整依赖图、重新生成 JS、重启并刷新，不混用旧 runtime。
 
 弹幕内容、位置、播放进度、裁剪阈值及 `/videos/diandian.mov` 地址保持。仓库没有原视频，页面会显示媒体无法播放；不能把弹幕可见等同视频播放通过。原 footer/progress 没有在主页面挂载，本轮不增加界面功能。
 
@@ -12,7 +12,9 @@
 
 ## 本次迁移与风险
 
-官方 formatter 转换三处旧类型形式。34个既有完整官方视图中，仅 render-app! 的渲染回调代码变化，既有 schema/tests/meta 不变；新增开放 Enum 的 DispatchOp 代表定义以绑定入口类型槽，代表值不发送。
+派发槽使用 AnyEnum，业务 Op 的状态路径使用 CoordKey union。开发面板用 Option 表达缺席，旧 spacer 改用原宽度。
+
+渲染回调代码变化，既有 schema/tests/meta 不变；新增开放 Enum 的 DispatchOp 代表定义以绑定入口类型槽，代表值不发送。
 
 渲染回调明确接收 Enum 后交给原 dispatch-wire!。原入口继续先区分 Reel 控制，再将业务操作解码成名义 Op；业务 dispatch! 仍只接受应用 Op，DevTools 仍经过原 Dynamic 边界。没有把匿名控制操作伪装成业务 Op，也没有取消运行时检查、增加事件包装或改变 updater。
 
@@ -30,9 +32,9 @@ yarn build
 node --test scripts/bullet-regression.test.mjs
 ```
 
-候选通过230个全定义、完整 strict diagnostics=[]、原7项 JS回归及构建；原测试文件/断言保持，没有附带 native 测试，不以空集合计为通过。实际隔离页面验证彩色自动弹幕和刷新后重新启动；媒体文件缺失，未验收视频播放、未挂载 footer 的页面交互、存档恢复或热更新 HUD 注错。不用历史0.30.1证据代替本轮验收。
+候选通过236个全定义、完整 strict diagnostics=[]、原7项 JS回归及构建；原测试文件/断言保持，没有附带 native 测试，不以空集合计为通过。此前隔离页面验证彩色自动弹幕和刷新后重新启动；媒体文件缺失，未验收视频播放、未挂载 footer 的页面交互、存档恢复或热更新 HUD 注错。不用历史0.30.1证据代替本轮验收。
 
-`yarn dev` 编译一次后启动 Vite；源码监听另开终端运行 `calcit calcit.cirru js -w`，不添加 concurrently。按照维护者已允许本地使用新工具链的要求，本轮可用官方固定0.32.1执行 query/tree/edit、检查和构建；不再沿用早期仅 Linux 准备 CI 的临时限制。
+`yarn dev` 编译一次后启动 Vite；源码监听另开终端运行 `calcit calcit.cirru js -w`，不添加 concurrently。按照维护者已允许本地使用新工具链的要求，本轮可用官方固定0.35.1执行 query/tree/edit、检查和构建；不再沿用早期仅 Linux 准备 CI 的临时限制。
 
 仅维护 `calcit.cirru` / `deps.cirru`，Snapshot 使用官方 CLI；不恢复 compact.cirru/package.cirru，不提交 js-out/dist，不增加常驻验证脚本。
 
