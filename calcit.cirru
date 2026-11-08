@@ -6,7 +6,7 @@
     {} (:description |) (:init-fn 'app.main/main!) (:mode :js) (:reload-fn 'app.main/reload!) (:target :browser)
       :feature-policy $ {}
       :modules $ [] |respo.calcit/ |respo-ui.calcit/ |reel.calcit/
-      :type-slots $ {} $ :dispatch-op |app.schema/DispatchOp
+      :type-slots $ {} $ :dispatch-op 'app.schema/DispatchOp
   :files $ {}
     'app.comp.container $ %{} 'FileEntry
       :defs $ {}
@@ -18,7 +18,7 @@
         'comp-container $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defcomp comp-container (reel)
             let
-                store $ app.schema/read-store $ .unwrap (get reel :store)
+                store $ :store reel
                 states store.:states
                 progress store.:progress
                 bullets store.:bullets
@@ -49,10 +49,10 @@
                             :right $ -> window-width (- 40) (* bullet-rand) (+ 40)
                           comp-bullet bullet.:content bullet.:color
                 if dev?
-                  Option :some $ comp-reel (>> states :reel) reel $ {}
+                  Option :some $ comp-typed-reel (>> states :reel) reel $ {}
                   Option :none
           :examples $ []
-          :schema $ quote $ Fn (Map Tag Dynamic) (-> respo.schema/Component) (:features :js-ffi)
+          :schema $ quote $ Fn (reel.typed/State app.schema/Op app.schema/Store) (-> respo.schema/Component) (:features :js-ffi)
         'comp-footer $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defcomp comp-footer ()
             div
@@ -109,11 +109,11 @@
             respo-ui.core :refer $ hsl
             respo.core :refer $ defcomp defeffect <> >> div button textarea span input list-> create-element
             respo.comp.space :refer $ space-x
-            reel.comp.reel :refer $ comp-reel
             app.config :refer $ dev? video-length display-duration
             app.timer :refer $ reset-timer!
             app.schema :refer $ Op
             js-ffi.browser :refer $ viewport-width viewport-height random
+            reel.comp.reel :refer $ comp-typed-reel
     'app.config $ %{} 'FileEntry
       :defs $ {}
         'dev? $ %{} 'CodeEntry (:doc |)
@@ -143,10 +143,9 @@
           :examples $ []
           :schema $ quote $ Ref Number
         '*reel $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defref *reel
-            -> reel-schema/reel (assoc :base app.schema/store) (assoc :store app.schema/store)
+          :code $ quote $ defref *reel (typed/new-reel app.schema/store)
           :examples $ []
-          :schema $ quote $ Ref (Map Tag Dynamic)
+          :schema $ quote $ Ref (reel.typed/State app.schema/Op app.schema/Store)
         '*ticking $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defref *ticking 0
           :examples $ []
@@ -154,18 +153,31 @@
         'dispatch! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn dispatch! (op)
             when config/dev? $ println |Dispatch: op
-            reset! *reel $ reel-updater app.updater/update-wire-store @*reel op
+            dispatch-resolved! op
             , &unit
           :examples $ []
           :schema $ quote $ Fn app.schema/Op (-> Unit)
-        'dispatch-wire! $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn dispatch-wire! (op)
-            if (reel.core/reel-control-op? op)
-              reset! *reel $ reel-updater app.updater/update-wire-store @*reel op
-              dispatch! $ decode-map-as op 'app.schema/Op
+        'dispatch-resolved! $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn dispatch-resolved! (op)
+            hint-fn $ Fn app.schema/ResolvedOp (-> Unit) (:features :js-ffi)
+            reset! *reel $ match op
+              (reel.typed/Control control) (typed/apply-control updater @*reel control)
+              (app.schema/Op action)
+                typed/record-op updater @*reel action (generate-id!) (host/now-ms)
             , &unit
           :examples $ []
-          :schema $ quote $ Fn Dynamic (-> Unit)
+        'dispatch-wire! $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn dispatch-wire! (op)
+            if
+              = (enum-definition op) (Option :some typed/Control)
+              dispatch-resolved! $ decode-map-as op 'reel.typed/Control
+              match (typed/decode-control op)
+                (:some control) (dispatch-resolved! control)
+                (:none)
+                  dispatch! $ decode-map-as op 'app.schema/Op
+            , &unit
+          :examples $ []
+          :schema $ quote $ Fn AnyEnum (-> Unit)
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! ()
             println "|Running mode:" $ if config/dev? |dev |release
@@ -189,7 +201,7 @@
           :code $ quote $ defn persist-storage! ()
             storage-set!
               .unwrap $ get config/site :storage-key
-              format-cirru-edn $ app.schema/read-store $ .unwrap (get @*reel :store)
+              format-cirru-edn $ :store @*reel
           :examples $ []
           :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
         'rand-content! $ %{} 'CodeEntry (:doc |)
@@ -230,7 +242,7 @@
             if (nil? build-errors)
               do (remove-watch! *reel :changes) (clear-cache!)
                 add-watch! *reel :changes $ fn (reel prev) (render-app!)
-                reset! *reel $ decode-map-as (refresh-reel @*reel app.schema/store app.updater/update-wire-store) (Map Tag Dynamic)
+                reset! *reel $ typed/refresh updater @*reel app.schema/store
                 clear-timeout! @*ticking
                 clear-interval! @*auto-bullets
                 random-bullets!
@@ -242,10 +254,7 @@
           :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
         'render-app! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn render-app! ()
-            render! mount-target (comp-container @*reel)
-              fn (op)
-                hint-fn $ Fn Enum $ -> Unit
-                dispatch-wire! op
+            render! mount-target (comp-container @*reel) dispatch-wire!
           :examples $ []
           :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
         'repeat! $ %{} 'CodeEntry (:doc |)
@@ -261,7 +270,7 @@
               fn ()
                 let
                     delta $ delta-time!
-                    store $ app.schema/read-store $ .unwrap (get @*reel :store)
+                    store $ :store @*reel
                   when store.:playing? $ dispatch! $ app.schema/Op :tick delta
                 start-tick!
               , 20
@@ -277,13 +286,13 @@
             app.updater :refer $ updater
             app.schema :as schema
             reel.util :refer $ listen-devtools!
-            reel.core :refer $ reel-updater refresh-reel
-            reel.schema :as reel-schema
             app.config :as config
             |./calcit.build-errors :default build-errors
             |bottom-tip :default hud!
             app.timer :refer $ delta-time!
             js-ffi.browser :refer $ query-selector add-event-listener! set-interval! set-timeout! clear-timeout! clear-interval! storage-set! random
+            reel.typed :as typed
+            js-ffi.shared :as host
     'app.schema $ %{} 'FileEntry
       :defs $ {}
         'Bullet $ %{} 'CodeEntry (:doc |)
@@ -291,8 +300,7 @@
           :examples $ []
           :schema $ quote StructDef
         'DispatchOp $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ def DispatchOp
-            :: :states ([]) nil
+          :code $ quote $ def DispatchOp (:: :unhandled)
           :examples $ []
           :schema $ quote AnyEnum
         'Op $ %{} 'CodeEntry (:doc |)
@@ -303,15 +311,12 @@
             :toggle
             :restart
             :bullet String Number String
-            :reel/toggle
-            :reel/recall Number
-            :reel/run
-            :reel/step
-            :reel/merge
-            :reel/reset
-            :reel/remove Number
           :examples $ []
           :schema $ quote EnumDef
+        'ResolvedOp $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defunion ResolvedOp Op reel.typed/Control
+          :examples $ []
+          :schema $ quote UnionDef
         'Store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defstruct Store
             :states $ Map Tag Dynamic
@@ -367,13 +372,8 @@
         :code $ quote $ ns app.timer
           :require $ js-ffi.shared :refer $ now-ms
     'app.updater $ %{} 'FileEntry
-      :defs $ {}
-        'update-wire-store $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn update-wire-store (store op op-id op-time)
-            updater (app.schema/read-store store) (decode-map-as op 'app.schema/Op) (decode-map-as op-id 'String) (decode-map-as op-time 'Number)
-          :examples $ []
-          :schema $ quote $ Fn Dynamic Dynamic Dynamic Dynamic (-> app.schema/Store)
-        'updater $ %{} 'CodeEntry (:doc |)
+      :defs $ {} $ 'updater
+        %{} 'CodeEntry (:doc |)
           :code $ quote $ defn updater (store op op-id op-time)
             match op
               (:states cursor data)
@@ -396,7 +396,6 @@
                       slice items0 600
                       , items0
                   assoc store :bullets $ conj items $ app.schema/Bullet :progress store.:progress :content content :rand rand :color color
-              _ $ do (println "|unknown op:" op) store
           :examples $ []
           :schema $ quote $ Fn app.schema/Store app.schema/Op String Number (-> app.schema/Store)
       :ns $ %{} 'NsEntry (:doc |)
