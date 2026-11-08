@@ -57,7 +57,7 @@ test("generated components render bullets, progress and the original video URL",
   globalThis.window = { innerWidth: 1024, innerHeight: 768, devicePixelRatio: 1 };
   try {
     const next = apply(store, "bullet", "rendered", 0.5, "white");
-    const html = make_string(comp_container(new_reel(next)));
+    const html = make_string(comp_container(new_reel(next), () => {}));
     assert.match(html, /rendered/);
     assert.match(html, /src="\/videos\/diandian.mov"/);
   } finally { globalThis.window = originalWindow; }

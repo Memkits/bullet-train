@@ -4,7 +4,7 @@
 
 ## 使用者需要注意
 
-配对正式 **Calcit / @calcit/procs 0.37.0**、Caps 0.1.1、Node 24、Yarn 4.18.0，模块使用正式 Reel 0.10.0、Respo 0.19.5、UI 0.15.2 和 JS FFI 0.2.13。传递 Router 0.12.2。升级后重装完整依赖图、重新生成 JS、重启并刷新，不混用旧 runtime。
+配对正式 **Calcit / @calcit/procs 0.38.0**、Caps 0.1.1、Node 24、Yarn 4.18.0，模块使用正式 Reel 0.11.0、Respo 0.19.5、UI 0.15.2 和 JS FFI 0.2.13。传递 Router 0.12.2。升级后重装完整依赖图、重新生成 JS、重启并刷新，不混用旧 runtime。
 
 弹幕内容、位置、播放进度、裁剪阈值及 `/videos/diandian.mov` 地址保持。仓库没有原视频，页面会显示媒体无法播放；不能把弹幕可见等同视频播放通过。原 footer/progress 没有在主页面挂载，本轮不增加界面功能。
 
@@ -12,7 +12,7 @@
 
 ## 本次迁移与风险
 
-应用事件和回放控制用 `Op | reel.typed/Control` 区分。渲染和 DevTools 入口接收框架枚举并解码，旧式回放控制继续可用。组件状态路径使用 CoordKey，Store 和 Reel 在内部保留具名类型。
+应用事件和回放控制用 `Op | reel.typed/Control` 区分。渲染入口接收具体 Op，Reel 面板和键盘通过独立回调接收具体 Control。组件状态路径使用 CoordKey，Store 和 Reel 在内部保留具名类型。
 
 ## 开发与验证
 
