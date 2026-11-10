@@ -37,13 +37,13 @@
                     :loop true
                 div
                   {} $ :style ui/expand
-                  list-> ({})
+                  keyed-> ({})
                     -> bullets $ map-indexed $ fn (idx bullet)
                       let
                           bullet-progress bullet.:progress
                           bullet-rand bullet.:rand
                           dx $ -> (- bullet-progress progress) (/ display-duration) (* window-width) negate $ + (* 0.25 window-width)
-                        [] idx $ div
+                        keyed-element idx $ div
                           {} $ :style $ {} (:position :absolute)
                             :top $ -> window-height (+ 400) (- dx)
                             :right $ -> window-width (- 40) (* bullet-rand) (+ 40)
@@ -110,7 +110,7 @@
         :code $ quote $ ns app.comp.container
           :require (respo-ui.core :as ui)
             respo-ui.core :refer $ hsl
-            respo.core :refer $ defcomp defeffect <> >> div button textarea span input list-> create-element
+            respo.core :refer $ defcomp defeffect <> >> div button textarea span input keyed-> keyed-element create-element
             respo.comp.space :refer $ space-x
             app.config :refer $ dev? video-length display-duration
             app.timer :refer $ reset-timer!
