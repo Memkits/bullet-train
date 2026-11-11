@@ -49,10 +49,10 @@
                             :right $ -> window-width (- 40) (* bullet-rand) (+ 40)
                           comp-bullet bullet.:content bullet.:color
                 if dev?
-                  Option :some $ comp-typed-reel (>> states :reel) reel ({}) on-control!
-                  Option :none
+                  Some $ comp-typed-reel (>> states :reel) reel ({}) on-control!
+                  , None
           :examples $ []
-          :schema $ quote $ Fn (reel.typed/State app.schema/Op app.schema/Store)
+          :schema $ quote $ Fn (reel.typed/State Op app.schema/Store)
             Fn reel.typed/Control $ -> Unit
             -> respo.schema/Component
             :features :js-ffi
@@ -94,7 +94,7 @@
                     :border-top $ str "|1px solid " $ hsl 0 0 50
                   div $ {} $ :style
                     {} (:height 16)
-                      :border-right $ str "|8px solid " $ hsl 0 0 90 (Option :some 0.7)
+                      :border-right $ str "|8px solid " $ hsl 0 0 90 (Some 0.7)
                       :bottom 8
                       :position :relative
                       :width $ str (* ratio 100) |%
@@ -148,7 +148,7 @@
         '*reel $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defref *reel (typed/new-reel app.schema/store)
           :examples $ []
-          :schema $ quote $ Ref (reel.typed/State app.schema/Op app.schema/Store)
+          :schema $ quote $ Ref (typed/State schema/Op schema/Store)
         '*ticking $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defref *ticking 0
           :examples $ []
@@ -159,7 +159,7 @@
             dispatch-resolved! op
             , &unit
           :examples $ []
-          :schema $ quote $ Fn app.schema/Op (-> Unit)
+          :schema $ quote $ Fn schema/Op (-> Unit)
         'dispatch-resolved! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn dispatch-resolved! (op)
             reset! *reel $ match op
@@ -168,7 +168,7 @@
                 typed/record-op updater @*reel action (generate-id!) (host/now-ms)
             , &unit
           :examples $ []
-          :schema $ quote $ Fn app.schema/ResolvedOp (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn schema/ResolvedOp (-> Unit) (:features :js-ffi)
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! ()
             println "|Running mode:" $ if config/dev? |dev |release
@@ -191,7 +191,7 @@
         'on-control! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn on-control! (control) (dispatch-resolved! control)
           :examples $ []
-          :schema $ quote $ Fn reel.typed/Control (-> Unit)
+          :schema $ quote $ Fn typed/Control (-> Unit)
         'persist-storage! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn persist-storage! ()
             storage-set!
@@ -298,7 +298,7 @@
           :schema $ quote StructDef
         'Op $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defenum Op
-            :states (List respo.schema/CoordKey) Dynamic
+            :states (List respo.schema/CoordKey) String
             :hydrate-storage app.schema/Store
             :tick Number
             :toggle
@@ -322,7 +322,7 @@
           :code $ quote $ def bullet
             Bullet :progress 0 :content | :rand 1 :color |white
           :examples $ []
-          :schema $ quote app.schema/Bullet
+          :schema $ quote Bullet
         'read-store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn read-store (value)
             if (struct? value)
@@ -330,14 +330,14 @@
                 _ other $ raise |Expected-Store
               raise |Expected-Store
           :examples $ []
-          :schema $ quote $ Fn Dynamic (-> app.schema/Store)
+          :schema $ quote $ Fn Input (-> Store) (:generics Input)
         'store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def store
             Store :states
               {} $ :cursor $ []
               , :progress 0 :playing? true :bullets $ []
           :examples $ []
-          :schema $ quote app.schema/Store
+          :schema $ quote Store
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.schema
     'app.timer $ %{} 'FileEntry
@@ -390,7 +390,7 @@
                       , items0
                   assoc store :bullets $ conj items $ app.schema/Bullet :progress store.:progress :content content :rand rand :color color
           :examples $ []
-          :schema $ quote $ Fn app.schema/Store app.schema/Op String Number (-> app.schema/Store)
+          :schema $ quote $ Fn schema/Store schema/Op String Number (-> schema/Store)
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.updater
           :require
