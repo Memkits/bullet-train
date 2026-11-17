@@ -53,9 +53,9 @@
                   , None
           :examples $ []
           :schema $ quote $ Fn (reel.typed/State Op app.schema/Store)
-            Fn reel.typed/Control $ -> Unit
+            Fn reel.typed/Control (-> Unit) (:features :state)
             -> respo.schema/Component
-            :features :js-ffi
+            :features :js-ffi :state
         'comp-footer $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defcomp comp-footer ()
             div
@@ -259,8 +259,9 @@
             set-interval! callback $ * 1000 duration
           :examples $ []
           :schema $ quote $ Fn Number
-            Fn $ -> Unit
+            Fn (-> Unit) (:features :state)
             -> Number
+            :features :js-ffi
         'start-tick! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn start-tick! ()
             reset! *ticking $ set-timeout!
