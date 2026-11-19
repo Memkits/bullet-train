@@ -4,7 +4,7 @@
 
 ## 使用者需要注意
 
-配对正式 **Calcit / @calcit/procs 0.43.0**、Caps 0.1.1、Node 24、Yarn 4.18.0，模块使用正式 Reel 0.11.3、Respo 0.19.11、UI 0.15.5 和 JS FFI 0.2.18。传递 Router 0.12.9。升级后重装完整依赖图、重新生成 JS、重启并刷新，不混用旧 runtime。
+配对正式 **Calcit / @calcit/procs 0.44.0**、Caps 0.1.1、Node 24、Yarn 4.18.0，模块使用正式 Reel 0.11.3、Respo 0.19.11、UI 0.15.5 和 JS FFI 0.2.18。传递 Router 0.12.9。升级后重装完整依赖图、重新生成 JS、重启并刷新，不混用旧 runtime。
 
 弹幕内容、位置、播放进度、裁剪阈值及 `/videos/diandian.mov` 地址保持。仓库没有原视频，页面会显示媒体无法播放；不能把弹幕可见等同视频播放通过。原 footer/progress 没有在主页面挂载，本轮不增加界面功能。
 
